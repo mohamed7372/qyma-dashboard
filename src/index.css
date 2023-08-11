@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body::-webkit-scrollbar {
+    width:8px;               /* width of the entire scrollbar */
+    background-color: #08101F;
+}
+body::-webkit-scrollbar-track {
+    background: transparent;        /* color of the tracking area */
+}
+body::-webkit-scrollbar-thumb {
+    background-color: #584632;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+}
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+.ql-toolbar {
+    background-color: white;
+}
+
+.ql-picker-label {
+    color: #444;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+progress::-webkit-progress-bar {
+    background-color: #eee;
+    border-radius: 10px;
+}
+
+progress::-webkit-progress-value {
+    background-color: rgb(241 156 51);
+    border-radius: 10px;
+}
+
+* {
+    /* color: white; */
+    color: #1a1a1a;
+}
+
+
+
+
+.skeleton {
+    @apply h-3 bg-gray-300 rounded-full animate-pulse
+}
+
+.skeleton-medium {
+    @apply h-5 bg-gray-300 rounded-full animate-pulse
+}
+
+.skeleton-big {
+    @apply h-8 bg-gray-300 rounded-full animate-pulse
+}
+
+.responsive {
+    @apply container mx-auto lg:px-20 md:px-10 px-4
+}
+
+.section {
+    @apply w-full my-28 z-10 relative
+}
+
+.title-section {
+    @apply font-extrabold capitalize text-xl md:text-3xl text-center
+}
+
+.badge {
+    @apply px-6 py-2 text-primary-200 text-sm border border-primary-200 rounded-lg cursor-pointer font-semibold mr-4
+}
+
+
+
+
+/* start slider css  */
+.slider-container {
+  --progress-bar-height: 4px;
+}
+
+.slider-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Background */
+.slider-container::before {
+  content: '';
+  background-color: white;
+  width: 99%;
+  height: calc(var(--progress-bar-height) - 1px);
+  display: block;
+  position: absolute;
+  border-radius: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Custom Progress Bar */
+.progress-bar-cover {
+  background-color: #3F7CE9;
+  width: 0%;
+  height: var(--progress-bar-height);
+  display: block;
+  position: absolute;
+  border-radius: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+/*  Hide Original */
+.range {
+  -webkit-appearance: none;
+  background-color: #1549a3;
+  height: 10px;
+  width: 100%;
+  cursor: pointer;
+  opacity: 0;
+  margin: 0 auto;
+}
+/* end slider css  */
+
+/* start thumb css  */
+.slider-container:hover {
+  --thumb-width: 15px;
+  --thumb-height: 15px;
+}
+
+.range::-webkit-slider-thumb {
+  width: var(--thumb-width);
+  height: var(--thumb-height);
+
+  background: #350f2d;
+  border: 1px solid #000000;
+  border-radius: 50%;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+.thumb {
+  width: var(--thumb-width);
+  height: var(--thumb-height);
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.753);
+  z-index: 3;
+  background: rgb(255, 255, 255);
+  position: absolute;
+  border-radius: 50%;
+  top: 50%;
+  transform: translate(0%, -50%);
+  pointer-events: none; /* Remove pointer events on thumb so user can click on the actual thumb beaneath it!  */
+  user-select: none; /*  Prevent Accidentally highlighting the number while sliding the cursor  */
+}
+/* end thumb css  */
