@@ -23,17 +23,17 @@ const SideBar = () => {
                 <li className={pathname.includes('bussiness') ? styleSelect : ''}>
                     <Item select={pathname.includes('bussiness')} title={'bussiness'} url='/admin/bussiness'/>
                 </li>
-                <li className={pathname.includes('topics') ? styleSelect : ''}>
-                    <Item select={pathname.includes('analytics')} title={'ads'} url='/admin/topics'/>
+                <li className={pathname.includes('ads') ? styleSelect : ''}>
+                    <Item select={pathname.includes('ads')} title={'ads'} url='/admin/ads'/>
                 </li>
-                <li className={pathname.includes('topics') ? styleSelect : ''}>
-                    <Item select={pathname.includes('analytics')} title={'analytics'} url='/admin/topics'/>
+                <li className={pathname.includes('analytics') ? styleSelect : ''}>
+                    <Item select={pathname.includes('analytics')} title={'analytics'} url='/admin/analytics'/>
                 </li>
-                <li className={pathname.includes('topics') ? styleSelect : ''}>
-                    <Item select={pathname.includes('analytics')} title={'reviews'} url='/admin/topics'/>
+                <li className={pathname.includes('reviews') ? styleSelect : ''}>
+                    <Item select={pathname.includes('reviews')} title={'reviews'} url='/admin/reviews'/>
                 </li>
-                <li className={pathname.includes('topics') ? styleSelect : ''}>
-                    <Item select={pathname.includes('analytics')} title={'categories'} url='/admin/topics'/>
+                <li className={pathname.includes('categories') ? styleSelect : ''}>
+                    <Item select={pathname.includes('categories')} title={'categories'} url='/admin/categories'/>
                 </li>
             </ul>
         </div>

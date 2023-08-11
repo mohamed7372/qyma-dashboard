@@ -5,7 +5,7 @@ import { Suspense, useEffect } from 'react';
 // import Podcast from './pages/Podcast';
 // import Archive from './pages/Archive';
 // import PodcastAdmin from './admin/pages/Bussiness';
-// import Add from './admin/pages/Add';
+import Add from './admin/pages/Add';
 // import AddPodcast from './admin/components/form/AddPodcast';
 // import PodcastDetail from './pages/PodcastDetail';
 import Dashboard from './admin/pages/Dashboard';
@@ -24,19 +24,21 @@ import Dashboard from './admin/pages/Dashboard';
 // import Notes from './pages/Notes';
 import Bussiness from './admin/pages/Bussiness';
 import BussinessDetail from './admin/pages/BussinessDetail';
+import AddBussiness from './admin/components/form/AddBussiness';
 
 function App() {
 
   return (
     <div className='bg-secondary-100'>
-      <div className='fixed bg-black w-full text-center z-50'>
+      <div className='fixed bg-black text-white w-full text-center z-50'>
         VERSION BETA v1.0.0 - UNDER DEVELOPMENT
       </div>
       <main>
         <Router>
           <Routes>
             {/* for users  */}
-            <Route exact path='/' element={<Bussiness />} />
+            <Route exact path='/' element={<Dashboard />} />
+
             {/* <Route path='login' element={<Auth />} />
             <Route path='register' element={<Auth />} />
 
@@ -57,8 +59,9 @@ function App() {
             <Route path='admin'>
               <Route path='bussiness' element={<Bussiness />} />
               <Route path='bussiness/:id' element={<BussinessDetail />} />
+              <Route path='bussiness/add' element={<Add><AddBussiness /></Add>} />
+
               {/* <Route path='podcasts/:id' element={<PodcastAdminDetail />} />
-              <Route path='podcasts/add' element={<Add><AddPodcast /></Add>} />
               <Route path='podcasts/:id/edit' element={<Add><AddPodcast /></Add>} />
 
               <Route path='articles' element={<ArticleAdmin />} />

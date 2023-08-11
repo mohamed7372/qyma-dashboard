@@ -17,9 +17,9 @@ import IconEdit from '../../../assets/icons/edit.svg'
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-const FilesUploadTable = ({fileImgName, fileImgSize, fileAudioName, fileAudioSize, remove}) => {
+const FilesUploadTable = ({fileImgName, fileImgSize, remove}) => {
     
-    if (fileImgName === '' && fileAudioName === '')
+    if (fileImgName.length === 0)
         return null;
     
     return (
@@ -34,44 +34,28 @@ const FilesUploadTable = ({fileImgName, fileImgSize, fileAudioName, fileAudioSiz
                     </Tr>
                 </Thead>
                 <Tbody className='text-sm'>
-                    {fileImgName && <Tr className=''>
-                        <Td className='py-3'>
-                            <div className='flex items-center'>
-                                <img src={IconFile} alt="" className='w-[20px]' />
-                                <p className='ml-4'>{fileImgName}</p>
-                            </div>
-                        </Td>
-                        <Td>
-                            <p>{fileImgSize} kb</p>
-                        </Td>
-                        <Td>
-                            <p>image</p>
-                        </Td>
-                        <Td className='flex justify-center items-center py-3'>
-                            <button className='mx-1'>
-                                <img src={IconBin} alt="" className='w-[17px]' onClick={()=> remove('img')}/>
-                            </button>
-                        </Td>
-                    </Tr>}
-                    {fileAudioName && <Tr className='border-none'>
-                        <Td className='py-3 border-none'>
-                            <div className='flex items-center'>
-                                <img src={IconFile} alt="" className='w-[20px]' />
-                                <p className='ml-4'>{fileAudioName}</p>
-                            </div>
-                        </Td>
-                        <Td>
-                            <p>{fileAudioSize} mb</p>
-                        </Td>
-                        <Td>
-                            <p>audio</p>
-                        </Td>
-                        <Td className='py-3 h-full'>
-                            <button className='mx-1 h-full'>
-                                <img src={IconBin} alt="" className=' w-[17px]' onClick={()=> remove('audio')}/>
-                            </button>
-                        </Td>
-                    </Tr>}
+                    {fileImgName.map((item, idx) => 
+                        <Tr className=''>
+                            <Td className='py-3'>
+                                <div className='flex items-center'>
+                                    <img src={IconFile} alt="" className='w-[20px]' />
+                                    <p className='ml-4'>{item}</p>
+                                </div>
+                            </Td>
+                            <Td>
+                                <p>{fileImgSize[idx]} kb</p>
+                            </Td>
+                            <Td>
+                                <p>Image</p>
+                            </Td>
+                            <Td className='flex justify-center items-center py-3'>
+                                <button className='mx-1'>
+                                    <img src={IconBin} alt="" className='w-[17px]' onClick={()=> remove('img')}/>
+                                </button>
+                            </Td>
+                        </Tr>
+                    )
+                    }
                 </Tbody>
             </Table>
         </TableContainer>

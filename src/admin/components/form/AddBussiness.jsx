@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import InputCustom from '../../../components/form/InputCustom'
-import { Input, Select } from '@chakra-ui/react'
+import { Input, Select, Stack } from '@chakra-ui/react'
 import IconUpload from '../../../assets/icons/upload.svg'
 import IconRemove from '../../../assets/icons/bin.svg'
 import FilesUploadTable from '../ui/FilesUploadTable'
@@ -13,8 +13,10 @@ import categoriesService from '../../../services/categories'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useToast } from '@chakra-ui/react'
 import RichTextEditor from '../ui/RichTextEditor'
+import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
+import Card from '../ui/Card'
 
-const AddPodcast = () => {
+const AddBussiness = () => {
     const editPage = window.location.pathname;
 
     const { id } = useParams();
@@ -28,7 +30,7 @@ const AddPodcast = () => {
     const [topic, setTopic] = useState('')
     const [desecription, setDescription] = useState('')
     const [explication, setExplication] = useState('')
-    const [image, setImage] = useState('https://res.cloudinary.com/dhf83aynm/image/upload/v1690056154/wl7numkaxxlgfg6paigf.jpg')
+    const [image, setImage] = useState([])
     const [audio, setAudio] = useState('https://res.cloudinary.com/dhf83aynm/video/upload/v1690056150/kv9x5hfcdfuepnidorei.mp3')
     const [duration, setDuration] = useState('00:00:00')
     const [notes, setNotes] = useState([{
@@ -44,7 +46,7 @@ const AddPodcast = () => {
 
     const cloudinaryRef = useRef()
     const widgetRef = useRef()
- 
+
     const [newId, setNewId] = useState('')   
 
     const navigate = useNavigate()
@@ -118,18 +120,18 @@ const AddPodcast = () => {
 
     // get categories and fill fileds depend the id 
     useEffect(() => {
-        episodeService
-            .getLast()
-            .then(res =>
-                setNumber(res[0].episodeNumber + 1)
-        )
+        // episodeService
+        //     .getLast()
+        //     .then(res =>
+        //         setNumber(res[0].episodeNumber + 1)
+        // )
         
-        categoriesService
-            .getAll()
-            .then(res => {
-                setCategory(res.categories)
-                setTopic(res.categories[0]._id)
-            })
+        // categoriesService
+        //     .getAll()
+        //     .then(res => {
+        //         setCategory(res.categories)
+        //         setTopic(res.categories[0]._id)
+        //     })
         
         if (id) {
             episodeService
@@ -155,15 +157,8 @@ const AddPodcast = () => {
         }
     }, [])
 
-    
-    const fileInputImageRef = useRef(null);
-    const fileInputAudioRef = useRef(null);
-
-    const [fileImgName, setFileImgName] = useState('')
-    const [fileImgSize, setFileImgSize] = useState('')
-
-    const [fileAudioName, setFileAudioName] = useState('')
-    const [fileAudioSize, setFileAudioSize] = useState('')
+    const [fileImgName, setFileImgName] = useState([])
+    const [fileImgSize, setFileImgSize] = useState([])
     
     const handleFileImageSelect = () => {
         const myWidget = window.cloudinary.createUploadWidget({
@@ -183,9 +178,9 @@ const AddPodcast = () => {
         }, (error, result) => {
             if (!error && result && result.event === 'success') {
                 console.log(result.info);
-                setFileImgName(result.info.original_filename)
-                setImage(result.info.url)
-                setFileImgSize(parseFloat(result.info.bytes / (1024)).toFixed(2));
+                setFileImgName([...fileImgName, result.info.original_filename])
+                setImage([...fileImgName, result.info.url])
+                setFileImgSize([...fileImgName, parseFloat(result.info.bytes / (1024)).toFixed(2)]);
             }
         });
 
@@ -206,35 +201,6 @@ const AddPodcast = () => {
         return hours + ':' + minutes + ':' + seconds;
     }
 
-    const handleFileAudioSelect = (event) => {
-        const myWidget = window.cloudinary.createUploadWidget({
-            cloudName: 'dfvttxaji',
-            uploadPreset: 'dnkgpvwi',
-            sources: ['local', 'url'],
-            showAdvancedOptions: true,
-            cropping: true,
-            multiple: false,
-            defaultSource: 'local',
-            allowedFormats: ['mp3', 'wav', 'ogg'], // configure allowed formats here
-            resourceType: 'video', // display only images
-            maxFiles: 1, // allow only one file to be selected
-            uploadParams: {
-                accept: 'video/*' // accept only image files
-            }
-        }, (error, result) => {
-            if (!error && result && result.event === 'success') {
-                console.log('object', result.info);
-                setDuration(convertToFormatTime(result.info.duration))
-                setFileAudioName(result.info.original_filename)
-                setAudio(result.info.url)
-                setFileAudioSize(parseFloat(result.info.bytes / (1024*1024)).toFixed(2));
-            }
-        });
-
-        widgetRef.current = myWidget;
-        widgetRef.current.open();
-    };
-
     const remove = (type) => {
         if (type === 'img') {
             setFileImgName('');
@@ -246,12 +212,6 @@ const AddPodcast = () => {
             setFileAudioName('');
             setFileAudioSize('');
             setAudio('')
-        }
-    }
-
-    const refBtnImg = () => {
-        if (fileInputImageRef && fileInputImageRef !== 'undefined') {
-            fileInputImageRef.current.onChange();
         }
     }
     
@@ -277,102 +237,115 @@ const AddPodcast = () => {
         <div>
             <p ref={toastRef}></p>
 
-            <h1 className='mt-6 text-center uppercase text-lg mb-10 border-b border-b-gray-400 w-fit mx-auto pb-4 text-gray-400'>{editPage.includes('edit') ? 'Edit a podcast' : 'Add A New podcast'}</h1>
+            <h1 className='mt-6 text-center uppercase text-lg mb-10 border-b border w-fit mx-auto pb-4'>{editPage.includes('edit') ? 'Edit a ' : 'Add A New '}</h1>
             
             <form action="">
                 {/* general information  */}
                 <div className='px-4 mt-10'>
-                    <Title nbr={1} title={'General Information'} />
-                    <div className='grid grid-cols-12 gap-x-4 w-full'>
+                    <Card>
+                        <Title nbr={1} title={'General Information'} />
+                        <div className='grid grid-cols-12 gap-x-4 w-full'>
+                            <div className='col-span-9'>
+                                <InputCustom title={'Title'} type='text' placeholder={'enter title'} item={title} setItem={setTitle} />
+                            </div>
+                            <div className='col-span-3'>
+                                {category && <SelectCustom title={'category'} data={category} item={topic} setItem={setTopic} showAll />}
+                            </div>
+                        </div>
 
-                        <div className='col-span-2'>
-                            <InputCustom title={'Number episode'} type='text' value={'#1'} disabled={true} item={number}/>
+                        {/* address  */}
+                        <div className='mt-10'>
+                            <Title nbr={4} title={'Address & contact'} />
+                            <div className='grid grid-cols-12 gap-x-4 w-full'>
+                                <div className='col-span-12 mb-4'>
+                                    <InputCustom title={'Address'} type='text' placeholder={'enter title'} item={title} setItem={setTitle} />
+                                </div>
+                                <div className='col-span-6'>
+                                    <InputCustom title={'latitude'} type='text' placeholder={'enter title'} item={title} setItem={setTitle} />
+                                </div>
+                                <div className='col-span-3'>
+                                    <InputCustom title={'longitude'} type='text' placeholder={'enter title'} item={title} setItem={setTitle} />
+                                </div>
+                                <div className='col-span-3'>
+                                    {category && <SelectCustom title={'wilaya'} data={category} item={topic} setItem={setTopic} showAll />}
+                                </div>
+                                <div className='col-span-6 mt-4'>
+                                    <InputCustom title={'phone number'} type='text' placeholder={'enter title'} item={title} setItem={setTitle} />
+                                </div>
+                            </div>
                         </div>
-                        <div className='col-span-7'>
-                            <InputCustom title={'Title'} type='text' placeholder={'enter title'} item={title} setItem={setTitle} />
-                        </div>
-                        <div className='col-span-3'>
-                            {category && <SelectCustom title={'topic'} data={category} item={topic} setItem={setTopic} showAll />}
-                        </div>
-                    </div>
+                    </Card>
                 </div>
+
 
                 {/* upload files  */}
                 <div className='px-4 mt-10'>
-                    <Title nbr={2} title={'Upload Your Files'} />
-                    <div className='flex items-center'>
-                        <div className='mr-4 border rounded-md bg-gray-700 px-6 py-2 flex items-center justify-center w-fit mb-4 cursor-pointer'
-                            // onClick={()=> fileInputImageRef.current.click()}>
-                            onClick={handleFileImageSelect}>
-                            <img src={IconUpload} alt="" className='w-[20px]'/>
-                            <p className='text-sm font-medium ml-4'>Upload image</p>
+                    <Card>
+                        <Title nbr={2} title={'Upload Your Files'} />
+                        <div className='flex items-center'>
+                            <div className='mr-4 rounded-lg bg-primary-200 px-6 py-3 flex items-center justify-center w-fit mb-4 cursor-pointer'
+                                // onClick={()=> fileInputImageRef.current.click()}>
+                                onClick={handleFileImageSelect}>
+                                <img src={IconUpload} alt="" className='w-[20px]'/>
+                                <p className='text-sm font-medium ml-4 text-white'>Upload image</p>
+                            </div>
                         </div>
 
-                        <div className='border rounded-md bg-gray-700 px-6 py-2 flex items-center justify-center w-fit mb-4 cursor-pointer'
-                            // onClick={()=> fileInputAudioRef.current.click()}>
-                            onClick={handleFileAudioSelect}>
-                            <img src={IconUpload} alt="" className='w-[20px]'/>
-                            <p className='text-sm font-medium ml-4'>Upload audio</p>
-                        </div>
-                    </div>
-
-                    <FilesUploadTable fileImgName={fileImgName} fileImgSize={fileImgSize} fileAudioName={fileAudioName} fileAudioSize={fileAudioSize} remove={remove} />
+                        <FilesUploadTable fileImgName={fileImgName} fileImgSize={fileImgSize} remove={remove} />
+                    </Card>
                 </div>
 
                 {/* description  */}
                 <div className='px-4 mt-10'>
-                    <Title nbr={3} title={'Description'} />
-                    <div>
-                        <textarea name="" id="" placeholder='write something...' value={desecription}
-                            cols="30" rows="10" className='w-full rounded-lg border bg-transparent px-4 py-2 outline-none'
-                            onChange={(e)=>setDescription(e.target.value)}
-                        >
-                        </textarea>
-                    </div>
+                    <Card>
+                        <Title nbr={3} title={'About the Bussiness'} />
+                        <div>
+                            <textarea name="" id="" placeholder='write something...' value={desecription}
+                                cols="30" rows="10" className='w-full rounded-lg border border-primary-200 placeholder:text-primary-200 placeholder:text-opacity-50 bg-transparent px-4 py-2 outline-none'
+                                onChange={(e)=>setDescription(e.target.value)}
+                            >
+                            </textarea>
+                        </div>
+                    </Card>
                 </div>
 
-                {/* explication  */}
+                {/* Amenities and More  */}
                 <div className='px-4 mt-10'>
-                    <Title nbr={4} title={'Explication'} />
-                    <div>
-                        <RichTextEditor setValue={setExplication} value={explication} />
-                    </div>
-                </div>
-
-                {/* add notes  */}
-                <div className='px-4 mt-10'>
-                    <Title nbr={4} title={'Notes'} />
-                    {
-                        notes.length > 0 && notes.map((item, idx) =>  
-                            <NoteField key={idx} nbr={idx} notes={notes} setNotes={setNotes} />
-                        )
-                    }
-                    <input type="button" value="Add" className='cursor-pointer w-fit bg-white text-gray-700 text-primary-200 font-semibold px-4 py-2 rounded-lg'
-                        onClick={() => setNotes([
-                            ...notes,
-                            {
-                                note: '',
-                                hour: 0,
-                                minute: 0,
-                                second: 0
-                            }
-                        ]
-                        )} />
-
-                    
+                    <Card>
+                        <Title nbr={3} title={'Amenities'} />
+                        <div className='ml-1'>
+                            <CheckboxGroup colorScheme='orange' defaultValue={['naruto', 'kakashi']}>
+                                <Stack spacing={[1, 5]} direction={['column', 'row']} className='!grid !grid-cols-4'>
+                                    {[1, 2, 3, 4, 5, 3, 3, 3, 3, 3, 3, 3, 3].map((item, idx) => 
+                                        <div className='bg-primary-200 bg-opacity-20 px-4 py-2 rounded-lg flex items-center justify-center' key={idx}>
+                                            <Checkbox value='naruto'>
+                                                <div className="flex items-center justify-center md:justify-start">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 ">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                                                    </svg>
+                                                    <p className="ml-3 text-xs sm:text-sm truncate">amenties</p>
+                                                </div>
+                                            </Checkbox>
+                                        </div>
+                                    )}
+                                </Stack>
+                            </CheckboxGroup>
+                        </div>
+                    </Card>
                 </div>
 
                 {/* buttons actions  */}
                 <div className='flex items-center justify-end w-full'>
                     <div className='w-fit flex justify-end px-4 mt-6 mb-4'>
-                        <Link to={'../podcasts'}>
+                        {/* <Link to={'../podcasts'}> */}
                             <button className='bg-primary-100 rounded-md px-10 py-2 font-semibold text-primary-200 border border-primary-200 bg-white'
                                 >Cancel</button>
-                        </Link>
+                        {/* </Link> */}
                     </div>
                     <div className='w-fit flex justify-end px-4 mt-6 mb-4'>
                         <button className='bg-primary-100 rounded-md px-10 py-2 font-semibold text-white bg-primary-200'
-                            onClick={(e) => handleSubmit(e)}>{editPage.includes('edit') ? 'Edit podcast' : 'Add podcast'}</button>
+                            // onClick={(e) => handleSubmit(e)}>{editPage.includes('edit') ? 'Edit podcast' : 'Add podcast'}</button>
+                            onClick={null}>Add</button>
                     </div>
                 </div>
             </form>
@@ -380,76 +353,15 @@ const AddPodcast = () => {
     )
 }
 
-export default AddPodcast
+export default AddBussiness
 
 const Title = ({ nbr, title }) => {
     return (
         <div className='flex items-center mt-4 mb-6'>
-            <div className='mr-3 w-8 h-8 pb-[1px] rounded-full border border-gray-400 flex justify-center items-center text-gray-200'>
+            <div className='mr-3 w-8 h-8 pb-[1px] rounded-full border border-primary-200 flex justify-center items-center '>
                 {nbr}
             </div>
-            <h1 className='text-gray-300 font-medium'>{title}</h1>
-        </div>
-    )
-}
-
-const NoteField = ({ nbr, notes, setNotes }) => {
-    const handleChangeInput = (value, type) => {
-        setNotes(
-            notes.map((item, idx) => {
-                if (nbr === idx) {
-                    switch (type) {
-                        case 'note': return { ...item, note: value }
-                        case 'hour': return {
-                            ...item, hour: value >= 24 ? 23 :
-                                (value.length === 1 ? `0${value}` : value)
-                        }
-                        case 'min': return {
-                            ...item, minute: value >= 60 ? 59 :
-                                (value.length === 1 ? `0${value}` : value)
-                        }
-                        case 'sec': return {
-                            ...item, second: value >= 60 ? 59 :
-                                (value.length === 1 ? `0${value}` : value)
-                        }
-                    }
-                }
-                return item;
-            })
-        )
-    }
-    
-    const handleRemove = () => {
-        noteService
-            .deleteNote(notes[nbr].id)
-            .then(res=> console.log(res))
-        if (notes.length === 1)
-            setNotes([{ note: '', hour: '00', minute: '00', second: '00' }])        
-        else
-            setNotes(notes.filter((item, idx) => nbr !== idx))
-        
-
-    }
-
-    return (
-        <div className='flex items-center mb-4'>
-            <div className='grid grid-cols-12 gap-x-4 w-full'>
-                <div className='col-span-6'>
-                    <InputCustom title={'Note ' + (nbr + 1)} type='text' placeholder={'enter new note'} item={notes[nbr].note} setItem={(val)=>handleChangeInput(val, 'note')} />
-                </div>
-                <div className='col-span-2'>
-                    <InputCustom title={'Hours'} type='number' min={0} max={23} item={ notes[nbr].hour} setItem={(val)=>handleChangeInput(val, 'hour')} />
-                </div>
-                <div className='col-span-2'>
-                    <InputCustom title={'Minutes'} type='number' min={0} max={59} item={ notes[nbr].minute} setItem={(val)=>handleChangeInput(val, 'min')} />
-                </div>
-                <div className='col-span-2'>
-                    <InputCustom title={'Seconds'} type='number' min={0} max={59} item={ notes[nbr].second} setItem={(val)=>handleChangeInput(val, 'sec')} />
-                </div>
-            </div>   
-            <div className='flex items-center justify-end w-[50px] h-full py-3'>
-                <img src={IconRemove} alt="" className='w-[20px] cursor-pointer' onClick={()=>handleRemove()}/>
-            </div>
+            <h1 className='font-medium'>{title}</h1>
         </div>
     )
 }

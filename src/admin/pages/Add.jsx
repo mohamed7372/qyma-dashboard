@@ -10,16 +10,14 @@ const Add = ({ children }) => {
 
     return (
         <div className='grid grid-cols-12 min-h-screen'>
-            <aside className='col-span-2 pt-10 bg-gray-800'>
+            <aside className='col-span-2 pt-10 bg-secondary-200'>
                 <StickyBox offsetTop={40} offsetBottom={20}>
                     <SideBar/>
                 </StickyBox>
             </aside>
             <main className='col-span-10 px-8'>
-                <Card>
-                    <div className=''></div>
-                    {children}
-                </Card>
+                <div className=''></div>
+                {children}
 
                 <div className='pt-5'></div>
             </main>

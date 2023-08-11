@@ -10,10 +10,10 @@ import RelatedCardList from "../components/ui/RelatedCardList";
 import ImageName from "../components/ui/ImageName";
 import ImgNF from '../../assets/img/image_not_found.jpeg'
 import Rating from "../components/ui/Rating";
-// import Options from '../layouts/Options'
+import Options from '../layout/Options'
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-// import GalleryPopUp from "../components/ui/GalleryPopUp";
+import GalleryPopUp from "../components/ui/GalleryPopUp";
 // import { useDispatch, useSelector } from "react-redux";
 import bussinessService from "../../services/bussiness";
 import reviewService from "../../services/review";
@@ -102,11 +102,11 @@ const Bussiness = () => {
     
     return (
         <div className="relative">
-            {/* <Options />
+            <Options />
             {galleryPopUp
                 && <div className='fixed bottom-0 left-0 bg-black bg-opacity-60 w-full h-screen z-[60]'>
                     <div ref={galleryRef} className="w-full h-full flex justify-center">
-                        {galleryPopUp && <GalleryPopUp images={bussinessData.cardImages} title={bussinessData.name} />}
+                        {galleryPopUp && <GalleryPopUp/>}
 
                         <div className="absolute top-14 right-10 cursor-pointer text-white flex items-center group" onClick={()=>showGalleryPopUp(false)}>
                             <p className="capitalize font-bold text-sm text-primary-200 group-hover:underline hidden md:block">close</p>
@@ -118,11 +118,11 @@ const Bussiness = () => {
                         </div>
                     </div>
                 </div>
-            } */}
+            }
 
             <ImageBussiness showGalleryPopUp={showGalleryPopUp}/>
 
-            <div className="mx-2">
+            <div className="">
                 <div className="content flex justify-between mt-10 px-4 md:px-0">
                     <div className="detail w-full lg:w-3/4">
                         <Card>
@@ -383,7 +383,7 @@ const InfoBussiness = () => {
     const imgSrc = process.env.REACT_APP_BASE_URL + "\\" + bussinessData.user.image.filePath
 
     return (
-        <div className="bg-white rounded-lg p-4">
+        <div className="bg-primary-200 bg-opacity-20 rounded-lg p-4">
             <header className="flex justify-start items-center">
                 <ImageName img={imgSrc} alt={bussinessData.name} />
                 <div className="names ml-3">
@@ -418,7 +418,7 @@ const Map = () => {
         return (<></>)
 
     return (
-        <div className="mt-4 bg-white rounded-lg">
+        <div className="mt-4 bg-primary-200 bg-opacity-20 rounded-lg">
             <div className="p-4">
                 <h5 className="text-sm font-bold">Address</h5>
                 <p className="text-xs text-gray-500">{ bussinessData.positions[0].address}</p>

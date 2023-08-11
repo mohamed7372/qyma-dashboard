@@ -5,7 +5,7 @@ import StickyBox from 'react-sticky-box'
 const Dashboard = () => {
     return (
         <div className='grid grid-cols-12 min-h-screen'>
-            <aside className='col-span-2 bg-gray-800 pt-10'>
+            <aside className='col-span-2 bg-secondary-200'>
                 <StickyBox offsetTop={40} offsetBottom={20}>
                     <SideBar/>
                 </StickyBox>
