@@ -4,14 +4,19 @@ import { json } from 'react-router-dom';
 const url = process.env.REACT_APP_API_URL
 
 const getReviews = (items=9, page=1) => axios
-  .get(`${url}/reviews/best/rate?perPage=5&page=1`)
+  .get(`${url}/reviews`)
   .then((response) => response.data)
-
-const getReviewsOfBussiness = (id, items=9, page=1) => axios
-  .get(`${url}/business/reviews/${id}`)
+  
+const getReview = (id) => axios
+  .get(`${url}/review/${id}`)
   .then((response) => response.data)
-
+  
+const deleteReview = (id) => axios
+  .delete(`${url}/review/delete/${id}`)
+  .then((response) => response.data)
+  
 export default {
   getReviews,
-  getReviewsOfBussiness
+  getReview,
+  deleteReview
 };

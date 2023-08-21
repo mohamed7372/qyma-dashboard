@@ -1,30 +1,12 @@
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
-import { Suspense, useEffect } from 'react';
-// import Home from './pages/Home';
-// import Footer from './layouts/Footer';
-// import Podcast from './pages/Podcast';
-// import Archive from './pages/Archive';
-// import PodcastAdmin from './admin/pages/Bussiness';
 import Add from './admin/pages/Add';
-// import AddPodcast from './admin/components/form/AddPodcast';
-// import PodcastDetail from './pages/PodcastDetail';
 import Dashboard from './admin/pages/Dashboard';
-// import PodcastAdminDetail from './admin/pages/PodcastAdminDetail';
-// import Articles from './pages/Articles';
-// import ArticleDetail from './pages/ArticleDetail';
-// import ArticleAdmin from './admin/pages/ArticleAdmin';
-// import Topics from './pages/Topics';
-// import TopicDetail from './pages/TopicDetail';
-// import TopicAdmin from './admin/pages/TopicAdmin';
-// import TopicAdminDetail from './admin/pages/TopicAdminDetail';
-// import AddTopic from './admin/components/form/AddTopic';
-// import AddArticle from './admin/components/form/AddArticle';
-// import Auth from './pages/Auth';
-// import ArticleAdminDetail from './admin/pages/ArticleAdminDetail';
-// import Notes from './pages/Notes';
 import Bussiness from './admin/pages/Bussiness';
 import BussinessDetail from './admin/pages/BussinessDetail';
+import Categories from './admin/pages/Categories';
 import AddBussiness from './admin/components/form/AddBussiness';
+import AddCategory from './admin/components/form/AddCategory';
+import Reviews from './admin/pages/Reviews';
 
 function App() {
 
@@ -61,6 +43,12 @@ function App() {
               <Route path='bussiness/:id' element={<BussinessDetail />} />
               <Route path='bussiness/add' element={<Add><AddBussiness /></Add>} />
 
+              <Route path='categories' element={<Categories />} />
+              {/* <Route path='bussiness/:id' element={<BussinessDetail />} /> */}
+              <Route path='categories/add' element={<Add><AddCategory /></Add>} />
+
+              <Route path='reviews' element={<Reviews />} />
+              
               {/* <Route path='podcasts/:id' element={<PodcastAdminDetail />} />
               <Route path='podcasts/:id/edit' element={<Add><AddPodcast /></Add>} />
 

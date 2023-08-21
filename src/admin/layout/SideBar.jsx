@@ -4,12 +4,27 @@ import IconDashboard from '../../assets/icons/bug.svg';
 import IconPodcast from '../../assets/icons/podcasts.svg';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logo/1.png'
+import axios from 'axios';
 
 const SideBar = () => {
     const styleSelect = 'border-r-2 border-primary-200'
 
     const pathname = window.location.pathname;
     
+    const url = process.env.REACT_APP_API_URL
+    const handleLogin = () => {
+        axios
+            .post(`${url}/register`, {
+                "username": "ramzi",
+                "displayName" : "Ramzi Issiakhem",
+                "email": "issiakhem@gmail.com",
+                "accountType": "V",     
+                "role" : 1,
+                "password" : "testtest",
+                "birthdayDate": "2023-12-12"
+            })
+            .then((response) => console.log(response))
+    }
     return (
         <div className='pl-4 2xl:pl-8 mt-4'>
             <img src={Logo} alt="" className='w-[190px]'/>
@@ -34,6 +49,9 @@ const SideBar = () => {
                 </li>
                 <li className={pathname.includes('categories') ? styleSelect : ''}>
                     <Item select={pathname.includes('categories')} title={'categories'} url='/admin/categories'/>
+                </li>
+                <li>
+                    <p onClick={handleLogin}>login</p>
                 </li>
             </ul>
         </div>

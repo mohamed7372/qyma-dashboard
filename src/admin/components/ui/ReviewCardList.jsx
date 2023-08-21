@@ -134,7 +134,7 @@ const ReviewCardList = () => {
         </div>
     );
 }
- 
+
 export default ReviewCardList;
 
 

@@ -4,7 +4,7 @@ import SelectCustom from "../../components/form/SelectCustom";
 import { useEffect, useState } from "react";
 import categoriesService from '../../services/categories'
 
-const Filter = () => {
+const Filter = ({showCat}) => {
     const [categories, setCategories] = useState([])
 
     const dataStatus = [

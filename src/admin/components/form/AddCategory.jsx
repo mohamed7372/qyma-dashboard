@@ -15,7 +15,7 @@ import RichTextEditor from '../ui/RichTextEditor'
 import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
 import Card from '../ui/Card'
 
-const AddBussiness = () => {
+const AddCategory = () => {
     const editPage = window.location.pathname;
 
     const { id } = useParams();
@@ -236,7 +236,7 @@ const AddBussiness = () => {
         <div>
             <p ref={toastRef}></p>
 
-            <h1 className='mt-6 text-center uppercase text-lg mb-10 border-b border w-fit mx-auto pb-4'>{editPage.includes('edit') ? 'Edit a ' : 'Add A New '}</h1>
+            <h1 className='mt-10 text-center uppercase text-lg mb-10 w-fit mx-auto pb-4'>{editPage.includes('edit') ? 'Edit A Category' : 'Add A New Category'}</h1>
             
             <form action="">
                 {/* general information  */}
@@ -352,7 +352,7 @@ const AddBussiness = () => {
     )
 }
 
-export default AddBussiness
+export default AddCategory
 
 const Title = ({ nbr, title }) => {
     return (

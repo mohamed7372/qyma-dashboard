@@ -12,6 +12,9 @@ const listReviewSlice = createSlice({
         },
         dataLoading(state, action) {
             state.status = 'loading';
+        },
+        removeData(state, action) {
+            state.itemsList = state.itemsList.filter(item => item.id !== action.payload);
         }
     },
 });
