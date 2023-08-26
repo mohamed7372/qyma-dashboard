@@ -9,7 +9,7 @@ const getAll = () => axios
     .catch((error) => json(error));
 
 const get = (id) => axios
-    .get(`${url}/categories/${id}`)
+    .get(`${url}/category/${id}`)
     .then((response) => response.data)
     .catch((error) => json(error));
 

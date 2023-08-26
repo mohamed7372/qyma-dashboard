@@ -81,8 +81,8 @@ const ReviewsTable = ({handleDelete}) => {
             .getReview(idComment)
             .then(
                 res => {
-                    console.log(res.data);
-                    // setReviewDetail(res.data.data)
+                    console.log('#####', res.data);
+                    setReviewDetail(res.data)
                 }
             )
     }
@@ -162,7 +162,7 @@ const ReviewsTable = ({handleDelete}) => {
                     }
                 </Tbody>
             </Table>
-            <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false} >
+            <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={true} size={'5xl'}>
                 <ModalOverlay />
                     <ModalContent overflow={'hidden'} rounded={'10'}>
                         <ModalHeader className=''>{viewModal ? 'Details Review' : 'Delete Review'}</ModalHeader>
@@ -172,8 +172,19 @@ const ReviewsTable = ({handleDelete}) => {
                             viewModal
                                 ?
                                 <>
-                                    <h1 className='text-lg font-semibold'>Are </h1>
-                                    {/* <ReviewCard2 review={reviewDetail}/> */}
+                                    <ReviewCard2 review={reviewDetail} />
+                                    <div className='flex items-center justify-end'>
+                                        <button
+                                            onClick={onClose}
+                                            className='p-3 mr-8 border border-primary-200 rounded-lg w-60 text-sm text-primary-200'>
+                                            Enable Status
+                                        </button>
+                                        <button
+                                            onClick={onClose}
+                                            className='p-3 border border-primary-200 rounded-lg w-60 text-sm text-white bg-primary-200'>
+                                            Delete
+                                        </button>
+                                    </div>
                                 </>
                                 :
                                 <>
@@ -200,7 +211,7 @@ const ReviewsTable = ({handleDelete}) => {
                         }
                         </ModalBody>
                     </ModalContent>
-                </Modal>
+            </Modal>
         </TableContainer>
     )
 }

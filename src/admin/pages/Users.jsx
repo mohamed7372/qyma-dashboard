@@ -8,39 +8,88 @@ import SideBar from '../layout/SideBar'
 import { Link } from 'react-router-dom'
 import StickyBox from 'react-sticky-box'
 import { useDispatch, useSelector } from 'react-redux'
-import {listCategoryActions} from '../../store/category/list-category-slice'
+import {listUserActions, lsitUserActions} from '../../store/user/list-user-slice'
 import CategoriesTable from '../components/ui/CategoriesTable'
 import categoriesService from '../../services/category'
+import UsersTable from '../components/ui/UsersTable'
+import userService from '../../services/user'
+import { useToast } from '@chakra-ui/react'
 
-const Categories = () => {
+const Users = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
-    const [alert, setAlert] = useState(0)   // 1 for success
-    const [msgAlert, setMsgAlert] = useState('')
-    const [trending, setTrending] = useState([])
-    
     const searchSlice = useSelector(state=>state.filter.search)
-    const topicSlice = useSelector(state=>state.filter.topic)
+    const topicSlice = useSelector(state=>state.filter.typeAccount)
     const statusSlice = useSelector(state=>state.filter.status)
     const dateToSlice = useSelector(state=>state.filter.to)
     const dateFromSlice = useSelector(state=>state.filter.from)
     
-    // get all episode 
+    // get all users 
     useEffect(() => {
-        categoriesService
-            .getCategories()
+        userService
+            .getUsers(searchSlice, topicSlice, dateFromSlice, dateToSlice, statusSlice)
             .then((res) => {
-                dispatch(listCategoryActions.replaceData(res.data));    
-                dispatch(listCategoryActions.dataLoading());    
+                dispatch(listUserActions.replaceData(res.data.data));    
+                dispatch(listUserActions.dataLoading());    
             }).catch((err) => {
                 console.log(err);                
             });
     }, [dispatch, searchSlice, topicSlice, dateFromSlice,dateToSlice, statusSlice])
 
+    const toast = useToast()
+
+    const [msgToast, setMsgToast] = useState('')
+    const [typeToast, setTypeToast] = useState('')
+    const [titleToast, setTitleToast] = useState('')
+    
+    // show toast msg 
+    useEffect(() => {
+        if (msgToast && titleToast && typeToast) {
+            toast({
+                title: titleToast,
+                description: msgToast,
+                status: typeToast,
+                duration: 5000,
+                isClosable: true,
+            })
+        }
+
+    }, [msgToast, titleToast, typeToast])
+    
+    const handleDelete = (id, name) => {
+        userService
+            .deleteEpisode(id)
+            .then(res => {
+                setTypeToast('success') 
+                setTitleToast('User deleted.')
+                setMsgToast(`We\'ve delete user ${name} for you.`);
+
+                dispatch(listUserActions.removeDAta(id));    
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    const toggleStatus = (id, name) => {
+        userService
+            .toggleUser(id)
+            .then(res => {
+                setTypeToast('success') 
+                setTitleToast('User updated.')
+                setMsgToast(`We\'ve change user ${name} status for you.`);
+
+                dispatch(listUserActions.updateData({ id:id, value:true}));    
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+    
     return (
         <div className='grid grid-cols-12 min-h-screen'>
 
@@ -54,7 +103,7 @@ const Categories = () => {
 
                 <Card>
                     <div className='flex items-center mt-2'>
-                        <h1 className='text-xl font-bold capitalize mr-4'>All Categories</h1>
+                        <h1 className='text-xl font-bold capitalize mr-4'>All Users</h1>
                         <div className='w-1/2 flex items-center'>
                             <SearchBar />
                             <Link to={'add'}>
@@ -67,11 +116,8 @@ const Categories = () => {
                             </button>
                         </div>
                     </div>
-                    <Filter/>
-                    <CategoriesTable setAlert={setAlert} setMsgAlert={setMsgAlert} />
-                    
-                    {/* <div className='mt-4'></div> */}
-                    {/* <Pagination/> */}
+                    <Filter showTypeAccount/>
+                    <UsersTable handleDelete={handleDelete} toggleStatus={toggleStatus} />
                 </Card>
 
                 <div className='pt-5'></div>
@@ -80,4 +126,4 @@ const Categories = () => {
     )
 }
 
-export default Categories
+export default Users

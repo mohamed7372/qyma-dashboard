@@ -4,7 +4,7 @@ import SelectCustom from "../../components/form/SelectCustom";
 import { useEffect, useState } from "react";
 import categoriesService from '../../services/categories'
 
-const Filter = ({showCat}) => {
+const Filter = ({showCat, showTypeAccount}) => {
     const [categories, setCategories] = useState([])
 
     const dataStatus = [
@@ -15,6 +15,13 @@ const Filter = ({showCat}) => {
         {
             _id: 1,
             title: 'published'
+        }
+    ]
+
+    const dataTypeAccount = [
+        {
+            id: 0,
+            title: 'V'
         }
     ]
 
@@ -30,7 +37,8 @@ const Filter = ({showCat}) => {
             <InputCustom title={'from'}/>
             <InputCustom title={'to'}/>
             <SelectCustom title={'status'} data={dataStatus}/>
-            <SelectCustom title={'categories'} data={categories}/>
+            {showCat && <SelectCustom title={'categories'} data={categories}/>}
+            {showTypeAccount && <SelectCustom title={'type account'} data={dataTypeAccount}/>}
         </div>
     )
 }

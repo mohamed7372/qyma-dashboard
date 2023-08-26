@@ -13,17 +13,14 @@ const SideBar = () => {
     
     const url = process.env.REACT_APP_API_URL
     const handleLogin = () => {
-        axios
-            .post(`${url}/register`, {
-                "username": "ramzi",
-                "displayName" : "Ramzi Issiakhem",
-                "email": "issiakhem@gmail.com",
-                "accountType": "V",     
-                "role" : 1,
-                "password" : "testtest",
-                "birthdayDate": "2023-12-12"
-            })
-            .then((response) => console.log(response))
+        localStorage.setItem('token', '6|kf9c5urF5KIq4IgNMGNnDhjKY9SBrU5N3gdSWePf')
+        // axios
+        //     .post(`${url}/login`,
+        //     {
+        //         "username": "ramzi_test1",
+        //         "password" : "testtest"
+        //     })
+        //     .then((response) => console.log(response))
     }
     return (
         <div className='pl-4 2xl:pl-8 mt-4'>
@@ -33,7 +30,7 @@ const SideBar = () => {
                     <Item title={'dashboard'} select={pathname.endsWith('admin')} />
                 </li>
                 <li className={pathname.endsWith('users') ? styleSelect : ''}>
-                    <Item select={pathname.includes('articles')} title={'users'} url='/admin/articles'/>
+                    <Item select={pathname.includes('users')} title={'users'} url='/admin/users'/>
                 </li>
                 <li className={pathname.includes('bussiness') ? styleSelect : ''}>
                     <Item select={pathname.includes('bussiness')} title={'bussiness'} url='/admin/bussiness'/>

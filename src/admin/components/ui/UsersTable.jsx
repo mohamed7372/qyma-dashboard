@@ -32,100 +32,35 @@ import episodeService from '../../../services/episode';
 import { Switch } from '@chakra-ui/react'
 import categoriesService from '../../../services/categories';
 import {listBussinessActions} from '../../../store/bussiness/list-bussiness-slice.js'
+import userService from '../../../services/user';
 
-const CategoriesTable = () => {
-    const listCategories = useSelector(state => state.listCategory.itemsList)
-    const statusListCategories = useSelector(state => state.listCategory.status)
-
-
-    const [categoryDetails, setCategoryDetails] = useState({})
-
-    const dispatch = useDispatch();
-
-    const toast = useToast()
+const UsersTable = ({handleDelete, toggleStatus}) => {
+    const listUsers = useSelector(state => state.listUser.itemsList)
+    const statusListUsers = useSelector(state => state.listUser.status)
 
     const [viewModal, setVeiwModal] = useState(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
 
-    const [idCat, setIdCat] = useState('')
-    const [catName, setCatName] = useState('')
+    const dispatch = useDispatch();
 
-    // const [msgToast, setMsgToast] = useState('')
-    // const [typeToast, setTypeToast] = useState('')
-    // const [titleToast, setTitleToast] = useState('')
-    
-    // // show toast msg 
-    // useEffect(() => {
-    //     if (msgToast && titleToast && typeToast) {
-    //         toast({
-    //             title: titleToast,
-    //             description: msgToast,
-    //             status: typeToast,
-    //             duration: 5000,
-    //             isClosable: true,
-    //         })
-    //     }
+    const [userDetails, setUserDetails] = useState({})
 
-    // }, [msgToast, titleToast, typeToast])
+    const [idUser, setIdUser] = useState('')
+    const [userName, setuserName] = useState('')
 
-    if (!statusListCategories)
+    if (!statusListUsers)
         return null;
 
-
-    const handleDelete = (id, number) => {
-        categoriesService
-            .deleteEpisode(id)
-            .then(res => {
-                episodeService
-                .getAll()
-                .then((res) => {
-                    // setTypeToast('success') 
-                    // setTitleToast('Podcast deleted.')
-                    // setMsgToast(`We\'ve delete podcast ${number} for you.`);
-
-                    dispatch(listBussinessActions.replaceData(res.episodes));    
-                    dispatch(listBussinessActions.dataLoading());    
-                }).catch((err) => {
-                    console.log(err);                
-                });
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-
-    const toggleStatus = (id, number) => {
-        episodeService
-            .toggleEpisode(id)
-            .then(res => {
-                episodeService
-                .getAll()
-                .then((res) => {
-                    // setTypeToast('success') 
-                    // setTitleToast('Podcast updated.')
-                    // setMsgToast(`We\'ve change podcast ${number} status for you.`);
-
-                    dispatch(listBussinessActions.replaceData(res.episodes));    
-                    dispatch(listBussinessActions.dataLoading());    
-                }).catch((err) => {
-                    console.log(err);                
-                });
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-    
     const handleView = (id) => {
-        categoriesService
-            .get(id)
+        userService
+            .getUser(id)
             .then(res =>
             {
-                setCategoryDetails(res.data)
+                setUserDetails(res.data)
             }
             )
     }
-
+    
     const convertToDateFromat = (val) => {
         if (!val) 
             return '-'
@@ -136,7 +71,7 @@ const CategoriesTable = () => {
         return formattedDate;
     }
 
-
+    console.log(userDetails);
     return (
         <TableContainer className='w-full bg-primary-200 bg-opacity-20 rounded-xl'>
             <Table variant='simple' className='w-full'>
@@ -144,8 +79,10 @@ const CategoriesTable = () => {
                     <Tr className='text-left uppercase text-xs font-semibold'>
                         <Th className='!text-primary-100 py-3 pl-12'>id</Th>
                         <Th className=' !text-primary-100'>name</Th>
-                        <Th className=' !text-primary-100'>parent id</Th>
-                        <Th className=' !text-primary-100'>parent name</Th>
+                        <Th className=' !text-primary-100'>user name</Th>
+                        <Th className=' !text-primary-100'>email</Th>
+                        <Th className=' !text-primary-100'>date email verified</Th>
+                        <Th className=' !text-primary-100'>type account</Th>
                         <Th className=' !text-primary-100'>created at</Th>
                         <Th className=' !text-primary-100'>status</Th>
                         <Th isNumeric className='text-right !text-primary-200'><p className='mb-2 mr-2'>...</p></Th>
@@ -153,10 +90,10 @@ const CategoriesTable = () => {
                 </Thead>
                 <Tbody className='text-sm'>
                     {
-                        listCategories && listCategories.map((item, idx) => {
+                        listUsers && listUsers.map((item, idx) => {
                             const date = new Date(item.createdAt);
                             const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '');
-    
+                            
                             return (
                                 <Tr className='' key={item.id} style={{border:'#000'}}>
                                     <Td className='py-3'>
@@ -166,24 +103,31 @@ const CategoriesTable = () => {
                                         </div>
                                     </Td>
                                     <Td>
-                                        <p className='col-span-2'>{item.name}</p>
+                                        <p className='col-span-2'>{item.displayName}</p>
                                     </Td>
                                     <Td>
-                                        <p>{item.parent ? `#${item.parent}` : '-'}</p>
+                                        <p>{item.username}</p>
                                     </Td>
                                     <Td>
-                                        <p>{item.parent}</p>
+                                        <p>{item.email}</p>
                                     </Td>
                                     <Td>
-                                        <p>{formattedDate}</p>
+                                        <p>{convertToDateFromat(item.emailVerifiedAt)}</p>
+                                    </Td>
+                                    <Td>
+                                        <p>{item.accountType}</p>
+                                    </Td>
+                                    <Td>
+                                        <p>{convertToDateFromat(item.createdAt)}</p>
+                                        {/* <p>{item.createdAt}</p> */}
                                     </Td>
                                     <Td className=''>
-                                        <Switch size='sm' colorScheme='orange' isChecked={item.state === 'Running'} onChange={()=>toggleStatus(item._id, item.episodeNumber)}/>
+                                        <Switch size='sm' colorScheme='orange' isChecked={false} onChange={()=>toggleStatus(item.id, item.username)}/>
                                     </Td>
                                     <Td>
                                         <div className="buttons flex justify-end items-center">
                                             <button className='mx-1' onClick={() => {
-                                                setCategoryDetails({})
+                                                setUserDetails({})
                                                 handleView(item.id)
                                                 setVeiwModal(true)
                                                 onOpen()
@@ -192,12 +136,12 @@ const CategoriesTable = () => {
                                             </button>
                                             <button className='mx-1'>
                                                 <Link to={`./${item.id}/edit`}>
-                                                    <img src={IconEdit} alt="" className='w-[17px]'/>
+                                                    <img src={IconEdit} alt="" className='min-w-[17px]'/>
                                                 </Link>
                                             </button>
                                             <button className='mx-1' onClick={() => {
-                                                setIdCat(item.id)
-                                                setCatName(item.displayName)
+                                                setIdUser(item.id)
+                                                setuserName(item.username)
                                                 setVeiwModal(false)
                                                 onOpen()
                                             }}>
@@ -214,7 +158,7 @@ const CategoriesTable = () => {
             <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={true}>
                 <ModalOverlay/>
                     <ModalContent overflow={'hidden'} rounded={'10'}>
-                        <ModalHeader className=''>{viewModal ? 'Category Details Information' : 'Delete Category'}</ModalHeader>
+                        <ModalHeader className=''>{viewModal ? 'User Details Information' : 'Delete User'}</ModalHeader>
                         <ModalCloseButton />
                     <ModalBody>
                         {
@@ -222,24 +166,21 @@ const CategoriesTable = () => {
                                 ?
                                 <div className=''>
                                     <div className='grid grid-cols-5'>
-                                        <img className='col-span-5 mx-auto mb-6 rounded-full w-28 h-28 object-cover' src={categoryDetails.image && `${process.env.REACT_APP_BASE_URL}/${categoryDetails.image.filePath}`}/>
-                                        <h3 className='font-semibold capitalize col-span-2 py-2 border-b border-t'>display name:</h3>
-                                        <p className='col-span-3 py-2 border-b border-t'>{categoryDetails.displayName}</p>
-
-                                        <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>name:</h3>
-                                        <p className='col-span-3 py-2 border-b'>{categoryDetails.name}</p>
-
-                                        <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>parent category:</h3>
-                                        <p className='col-span-3 py-2 border-b'>{categoryDetails.parent ? categoryDetails.parent : '-'}</p>
-
-                                        <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>description:</h3>
-                                        <p className='col-span-3 py-2 border-b'>{categoryDetails.description}</p>
-
+                                        <img className='col-span-5 mx-auto mb-6 rounded-full w-28 h-28 object-cover' src={userDetails.image && `${process.env.REACT_APP_BASE_URL}/${userDetails.image.filePath}`}/>
+                                        <h3 className='font-semibold capitalize col-span-2 py-2 border-b border-t'>name:</h3>
+                                        <p className='col-span-3 py-2 border-b border-t'>{userDetails.displayName}</p>
+                                        <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>username:</h3>
+                                        <p className='col-span-3 py-2 border-b'>{userDetails.username}</p>
+                                        <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>email: <span>{userDetails.emailVerifiedAt ? '(verified)' : ''}</span></h3>
+                                        <p className='col-span-3 py-2 border-b'>{userDetails.email}</p>
+                                        <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>birthday:</h3>
+                                        <p className='col-span-3 py-2 border-b'>{convertToDateFromat(userDetails.birthdayDate)}</p>
+                                        <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>type user:</h3>
+                                        <p className='col-span-3 py-2 border-b'>{userDetails.accountType}</p>
                                         <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>status:</h3>
-                                        <Switch className='col-span-3 mt-1 py-2 border-b' size='sm' colorScheme='orange' isChecked={false} onChange={()=>toggleStatus(categoryDetails.id,categoryDetails.displayName)}/>
-
+                                        <Switch className='col-span-3 mt-1 py-2 border-b' size='sm' colorScheme='orange' isChecked={false} onChange={()=>toggleStatus(userDetails.id,userDetails.username)}/>
                                         <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>created at:</h3>
-                                        <p className='col-span-3 py-2 border-b'>{convertToDateFromat(categoryDetails.createdAt)}</p>
+                                        <p className='col-span-3 py-2 border-b'>{convertToDateFromat(userDetails.createdAt)}</p>
                                     </div>
                                     <div className='flex items-center justify-between'>
                                         <button
@@ -249,8 +190,8 @@ const CategoriesTable = () => {
                                         </button>
                                         <button
                                         onClick={() => {
-                                            setIdCat(categoryDetails.id)
-                                            setCatName(categoryDetails.displayName)
+                                            setIdUser(userDetails.id)
+                                            setuserName(userDetails.username)
                                             setVeiwModal(false)
                                             onOpen()
                                         }
@@ -262,7 +203,7 @@ const CategoriesTable = () => {
                                 </div>
                                 :
                                 <>
-                                    <h1 className='text-sm font-semibold'>Are you sure ? to delete category <span className='font-bold uppercase'>{catName}</span></h1>
+                                    <h1 className='text-sm font-semibold'>Are you sure ? to delete username <span className='font-bold uppercase'>{userName}</span></h1>
                                     <div className='flex items-center justify-between'>
                                         <button
                                             onClick={onClose}
@@ -271,9 +212,9 @@ const CategoriesTable = () => {
                                         </button>
                                         <button
                                         onClick={() => {
-                                            handleDelete(idCat, catName)
-                                            setIdCat('')
-                                            setCatName('')
+                                            handleDelete(idUser, userName)
+                                            setIdUser('')
+                                            setuserName('')
                                         }
                                         }
                                             className='mt-6 p-3 bg-primary-200 rounded-lg w-[45%] text-sm text-white'>
@@ -289,4 +230,4 @@ const CategoriesTable = () => {
     )
 }
 
-export default CategoriesTable
+export default UsersTable
