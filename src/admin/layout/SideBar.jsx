@@ -5,6 +5,7 @@ import IconPodcast from '../../assets/icons/podcasts.svg';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logo/1.png'
 import axios from 'axios';
+import { useState } from 'react';
 
 const SideBar = () => {
     const styleSelect = 'border-r-2 border-primary-200'
@@ -22,6 +23,85 @@ const SideBar = () => {
         //     })
         //     .then((response) => console.log(response))
     }
+
+    const [file, setFile] = useState(null)
+
+    // const handleFile = async e => {
+    //     setFile(e.target.files[0])
+
+    //     try {
+    //   const response = await fetch('https://qima-dzair.ramzi-issiakhem.com/api/v1/category/create', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({
+    //         userId : 1,
+    //         name : 'fast-foodaa235301',
+    //         displayName : 'Bouffe Rapide',
+    //         displayNameAr : 'مطعم',
+    //         displayNameEn : 'Fast Food',
+    //         description : 'Description',
+    //         descriptionAr : 'مطعم',
+    //         descriptionEn: 'Fast Food',
+    //         image: e.target.files[0]
+    //     })
+    //   });
+
+    //   if (response.ok) {
+    //     console.log('Data sent successfully');
+    //     // handle success
+    //   } else {
+    //     console.error('Error sending data:', response.status);
+    //     // handle error
+    //   }
+    // } catch (error) {
+    //   console.error('Error sending data:', error);
+    //   // handle error
+    // }
+        
+    //     // axios.post('https://qima-dzair.ramzi-issiakhem.com/api/v1/category/create', {
+    //     //     userId : 1,
+    //     //     name : 'fast-foodaa235301',
+    //     //     displayName : 'Bouffe Rapide',
+    //     //     displayNameAr : 'مطعم',
+    //     //     displayNameEn : 'Fast Food',
+    //     //     description : 'Description',
+    //     //     descriptionAr : 'مطعم',
+    //     //     descriptionEn: 'Fast Food',
+    //     //     image: e.target.files[0]
+    //     // })
+    //     //     .then(res => console.log('good, ', res))
+    //     // .then(err => console.log(err))
+    // }
+
+    const handleFile = async (e) => {
+        const formData = new FormData();
+            formData.append('userId', '1')
+            formData.append('name', 'fast-foodaa2zd353err')
+            formData.append('displayName', 'Bouffe Rapide')
+            formData.append('displayNameAr', 'مطعم')
+            formData.append('displayNameEn', 'Fast Food')
+            formData.append('description', 'Description')
+            formData.append('descriptionAr', 'مطعم')
+            formData.append('descriptionEn', 'Fast Food')
+            
+        
+        axios.post(
+            'https://qima-dzair.ramzi-issiakhem.com/api/v1/category/create',
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer 18|aVIZebIfcrPrLXfVkkbt2EwIJS0GEFWKgpbRwKVD'
+                }
+            }
+        ).then(res => console.log(res))
+
+        
+    };
+
     return (
         <div className='pl-4 2xl:pl-8 mt-4'>
             <img src={Logo} alt="" className='w-[190px]'/>
@@ -49,6 +129,14 @@ const SideBar = () => {
                 </li>
                 <li>
                     <p onClick={handleLogin}>login</p>
+                </li>
+                <li>
+                    {/* <input type="file" name="" id="" onChange={handleFile}/> */}
+                    <p onClick={handleFile}>test api</p>
+                </li>
+
+                <li className=''>
+                    <div className="w-40 h-40 bg-red-200 place-content-center grid"><p className='w-fit h-fit bg-blue-400'>1</p></div>
                 </li>
             </ul>
         </div>

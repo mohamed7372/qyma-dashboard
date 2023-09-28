@@ -7,38 +7,27 @@ const SelectCustom = ({ title, children, data, item, setItem, showAll=false }) =
     const dispatch = useDispatch();
 
     const handleChangeInput = e => {
-        if (title === 'duration') {
-            dispatch(filterActions.replaceDataDuration(e.target.value === 'all' ? '' : e.target.value))
-        }
-        else if (title === 'topics') {
+        if (title === 'parent category') {
             dispatch(filterActions.replaceDataTopic(e.target.value ==='all' ? '' : e.target.value))
         }
-        else if (title === 'status') {
-            dispatch(filterActions.replaceDataStatus(e.target.value === 'all' ? '' : e.target.value))
-        }
-        else if (title === 'topic') {
-            setItem(e.target.value)
-        }
     }
-
-    // console.log(object);
+    
     return (
         <div className="relative">
-            <div className="border border-primary-200 px-6 py-2 rounded-lg text-primary-100">
-            {/* <div className="border px-6 py-2 rounded-lg text-gray-600"> */}
-                <select variant='unstyled' defaultValue={'test'} className='text-sm my-1 w-full outline-none bg-secondary-200 text-primary-100 capitalize' onChange={handleChangeInput}>
+            <div className="border border-primary-100 px-6 py-2 rounded-lg text-gray-600">
+                <select variant='unstyled' className='text-sm my-1 w-full outline-none bg-transparent text-primary-100 capitalize' onChange={handleChangeInput}>
                     {!showAll && <option value={'all'} className='capitalize'>all</option>}
                     {
-                        data.map((itemData, idx) => {
+                        data.map( itemData => {
                             return(
-                                <option value={itemData._id} key={itemData._id} className='capitalize' selected={item === itemData._id}>{itemData.title}</option>
+                                <option value={itemData.id} key={itemData.id} className='capitalize text-black' selected={item === itemData.id}>{itemData.name}</option>
                             )
                         }
                         )
                     }
                 </select>
             </div>
-            <p className='absolute left-2 -top-2 bg-secondary-200 text-xs font-semibold px-2 text-primary-100 capitalize'>{title}</p>
+            <p className='absolute left-2 -top-2 text-xs font-semibold px-2 text-primary-100 capitalize rounded-md bg-primary-400'>{title}</p>
         </div>
     )
 }

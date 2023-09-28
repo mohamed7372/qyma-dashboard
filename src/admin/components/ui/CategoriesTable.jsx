@@ -33,10 +33,9 @@ import { Switch } from '@chakra-ui/react'
 import categoriesService from '../../../services/categories';
 import {listBussinessActions} from '../../../store/bussiness/list-bussiness-slice.js'
 
-const CategoriesTable = () => {
+const CategoriesTable = ({handleDelete, toggleStatus}) => {
     const listCategories = useSelector(state => state.listCategory.itemsList)
     const statusListCategories = useSelector(state => state.listCategory.status)
-
 
     const [categoryDetails, setCategoryDetails] = useState({})
 
@@ -50,79 +49,14 @@ const CategoriesTable = () => {
     const [idCat, setIdCat] = useState('')
     const [catName, setCatName] = useState('')
 
-    // const [msgToast, setMsgToast] = useState('')
-    // const [typeToast, setTypeToast] = useState('')
-    // const [titleToast, setTitleToast] = useState('')
-    
-    // // show toast msg 
-    // useEffect(() => {
-    //     if (msgToast && titleToast && typeToast) {
-    //         toast({
-    //             title: titleToast,
-    //             description: msgToast,
-    //             status: typeToast,
-    //             duration: 5000,
-    //             isClosable: true,
-    //         })
-    //     }
-
-    // }, [msgToast, titleToast, typeToast])
-
     if (!statusListCategories)
         return null;
 
-
-    const handleDelete = (id, number) => {
-        categoriesService
-            .deleteEpisode(id)
-            .then(res => {
-                episodeService
-                .getAll()
-                .then((res) => {
-                    // setTypeToast('success') 
-                    // setTitleToast('Podcast deleted.')
-                    // setMsgToast(`We\'ve delete podcast ${number} for you.`);
-
-                    dispatch(listBussinessActions.replaceData(res.episodes));    
-                    dispatch(listBussinessActions.dataLoading());    
-                }).catch((err) => {
-                    console.log(err);                
-                });
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-
-    const toggleStatus = (id, number) => {
-        episodeService
-            .toggleEpisode(id)
-            .then(res => {
-                episodeService
-                .getAll()
-                .then((res) => {
-                    // setTypeToast('success') 
-                    // setTitleToast('Podcast updated.')
-                    // setMsgToast(`We\'ve change podcast ${number} status for you.`);
-
-                    dispatch(listBussinessActions.replaceData(res.episodes));    
-                    dispatch(listBussinessActions.dataLoading());    
-                }).catch((err) => {
-                    console.log(err);                
-                });
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-    
     const handleView = (id) => {
         categoriesService
             .get(id)
             .then(res =>
-            {
                 setCategoryDetails(res.data)
-            }
             )
     }
 
@@ -136,14 +70,13 @@ const CategoriesTable = () => {
         return formattedDate;
     }
 
-
     return (
         <TableContainer className='w-full bg-primary-200 bg-opacity-20 rounded-xl'>
             <Table variant='simple' className='w-full'>
                 <Thead>
                     <Tr className='text-left uppercase text-xs font-semibold'>
                         <Th className='!text-primary-100 py-3 pl-12'>id</Th>
-                        <Th className=' !text-primary-100'>name</Th>
+                        <Th className=' !text-primary-100'>display name</Th>
                         <Th className=' !text-primary-100'>parent id</Th>
                         <Th className=' !text-primary-100'>parent name</Th>
                         <Th className=' !text-primary-100'>created at</Th>
@@ -153,7 +86,7 @@ const CategoriesTable = () => {
                 </Thead>
                 <Tbody className='text-sm'>
                     {
-                        listCategories && listCategories.map((item, idx) => {
+                        listCategories.data && listCategories.data.map((item, idx) => {
                             const date = new Date(item.createdAt);
                             const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '');
     
@@ -166,7 +99,7 @@ const CategoriesTable = () => {
                                         </div>
                                     </Td>
                                     <Td>
-                                        <p className='col-span-2'>{item.name}</p>
+                                        <p className='col-span-2'>{item.displayName}</p>
                                     </Td>
                                     <Td>
                                         <p>{item.parent ? `#${item.parent}` : '-'}</p>
@@ -178,7 +111,7 @@ const CategoriesTable = () => {
                                         <p>{formattedDate}</p>
                                     </Td>
                                     <Td className=''>
-                                        <Switch size='sm' colorScheme='orange' isChecked={item.state === 'Running'} onChange={()=>toggleStatus(item._id, item.episodeNumber)}/>
+                                        <Switch size='sm' colorScheme='orange' isChecked={item.state === 'Running'} onChange={()=>toggleStatus(item.id, item.displayName, item.status)}/>
                                     </Td>
                                     <Td>
                                         <div className="buttons flex justify-end items-center">
@@ -236,28 +169,28 @@ const CategoriesTable = () => {
                                         <p className='col-span-3 py-2 border-b'>{categoryDetails.description}</p>
 
                                         <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>status:</h3>
-                                        <Switch className='col-span-3 mt-1 py-2 border-b' size='sm' colorScheme='orange' isChecked={false} onChange={()=>toggleStatus(categoryDetails.id,categoryDetails.displayName)}/>
+                                        <Switch className='col-span-3 mt-1 py-2 border-b' size='sm' colorScheme='orange' isChecked={false} onChange={()=>toggleStatus(categoryDetails.id,categoryDetails.displayName, categoriesService.status)}/>
 
                                         <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>created at:</h3>
                                         <p className='col-span-3 py-2 border-b'>{convertToDateFromat(categoryDetails.createdAt)}</p>
                                     </div>
                                     <div className='flex items-center justify-between'>
                                         <button
-                                            onClick={onClose}
+                                            onClick={() => {
+                                                setIdCat(categoryDetails.id)
+                                                setCatName(categoryDetails.displayName)
+                                                setVeiwModal(false)
+                                                onOpen()
+                                                }
+                                            }
                                             className='mt-6 p-3 border border-primary-200 rounded-lg w-[45%] text-sm text-primary-200'>
                                             Delete
                                         </button>
-                                        <button
-                                        onClick={() => {
-                                            setIdCat(categoryDetails.id)
-                                            setCatName(categoryDetails.displayName)
-                                            setVeiwModal(false)
-                                            onOpen()
-                                        }
-                                        }
-                                            className='mt-6 p-3 bg-primary-200 rounded-lg w-[45%] text-sm text-white'>
-                                            Edit
-                                        </button>
+                                        <Link to={'./edit'} className='w-[45%]'>
+                                            <button className='mt-6 p-3 bg-primary-200 w-full rounded-lg text-sm text-white'>
+                                                Edit
+                                            </button>
+                                        </Link>
                                     </div>
                                 </div>
                                 :
@@ -274,6 +207,7 @@ const CategoriesTable = () => {
                                             handleDelete(idCat, catName)
                                             setIdCat('')
                                             setCatName('')
+                                            onClose()
                                         }
                                         }
                                             className='mt-6 p-3 bg-primary-200 rounded-lg w-[45%] text-sm text-white'>

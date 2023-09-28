@@ -38,10 +38,15 @@ const getRecommandBussiness = (id) => axios
   })
   .catch((error) => json(error));
 
+const deleteBussiness = id => axios
+  .delete(`${url}/business/delete/${id}`)
+  .then(res => res)
+
 export default {
   getBussiness,
   getBussinessDetail,
   getRecommandBussiness,
   getSelectedBussiness,
-  getAllWilaya
+  getAllWilaya,
+  deleteBussiness
 };

@@ -12,6 +12,7 @@ import {listBussinessActions} from '../../store/bussiness/list-bussiness-slice'
 import BussinessTable from '../components/ui/BussinessTable'
 import BussinessRequestCard from '../components/ui/BussinessRequestCard'
 import bussinessService from '../../services/bussiness'
+import { useToast } from '@chakra-ui/react'
 
 const Bussiness = () => {
     const dispatch = useDispatch();
@@ -20,20 +21,36 @@ const Bussiness = () => {
         window.scrollTo(0, 0);
     }, []);
 
-    const [alert, setAlert] = useState(0)   // 1 for success
-    const [msgAlert, setMsgAlert] = useState('')
-    const [trending, setTrending] = useState([])
-    
     const searchSlice = useSelector(state=>state.filter.search)
     const topicSlice = useSelector(state=>state.filter.topic)
     const statusSlice = useSelector(state=>state.filter.status)
     const dateToSlice = useSelector(state=>state.filter.to)
     const dateFromSlice = useSelector(state=>state.filter.from)
     
-    // get all episode 
+    const toast = useToast()
+
+    const [msgToast, setMsgToast] = useState('')
+    const [typeToast, setTypeToast] = useState('')
+    const [titleToast, setTitleToast] = useState('')
+
+    // show toast msg 
+    useEffect(() => {
+        if (msgToast && titleToast && typeToast) {
+            toast({
+                title: titleToast,
+                description: msgToast,
+                status: typeToast,
+                duration: 5000,
+                isClosable: true,
+            })
+        }
+
+    }, [msgToast, titleToast, typeToast])
+
+    // get all bussiness 
     useEffect(() => {
         bussinessService
-            .getBussiness()
+            .getBussiness(searchSlice, topicSlice, dateFromSlice,dateToSlice, statusSlice)
             .then((res) => {
                 dispatch(listBussinessActions.replaceData(res.data.data));    
                 dispatch(listBussinessActions.dataLoading());    
@@ -41,6 +58,38 @@ const Bussiness = () => {
                 console.log(err);                
             });
     }, [dispatch, searchSlice, topicSlice, dateFromSlice,dateToSlice, statusSlice])
+
+    const handleDelete = (id, name) => {
+        bussinessService
+            .deleteBussiness(id)
+            .then(res => {
+                setTypeToast('success') 
+                setTitleToast('Bussiness deleted.')
+                setMsgToast(`We\'ve delete bussiness ${name} for you.`);
+
+                dispatch(listBussinessActions.removeData(id));    
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    const toggleStatus = (id, name, value) => {
+        console.log(id, name, value);
+        dispatch(listBussinessActions.updateData({ id:id, value:value}));    
+        // categoriesService
+        //     .toggleCategory(id)
+        //     .then(res => {
+        //         setTypeToast('success') 
+        //         setTitleToast('User updated.')
+        //         setMsgToast(`We\'ve change user ${name} status for you.`);
+                
+        //         dispatch(listCategoryActions.updateData({ id:id, value:true}));    
+        //     })
+        //     .catch(err => {
+        //         console.log(err);
+        //     })
+    }
 
     return (
         <div className='grid grid-cols-12 min-h-screen'>
@@ -85,7 +134,7 @@ const Bussiness = () => {
                         </div>
                     </div>
                     <Filter/>
-                    <BussinessTable setAlert={setAlert} setMsgAlert={setMsgAlert} />
+                    <BussinessTable handleDelete={handleDelete} toggleStatus={toggleStatus} />
                     
                     {/* <div className='mt-4'></div> */}
                     {/* <Pagination/> */}

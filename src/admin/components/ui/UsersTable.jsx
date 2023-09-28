@@ -71,7 +71,6 @@ const UsersTable = ({handleDelete, toggleStatus}) => {
         return formattedDate;
     }
 
-    console.log(userDetails);
     return (
         <TableContainer className='w-full bg-primary-200 bg-opacity-20 rounded-xl'>
             <Table variant='simple' className='w-full'>
@@ -91,9 +90,6 @@ const UsersTable = ({handleDelete, toggleStatus}) => {
                 <Tbody className='text-sm'>
                     {
                         listUsers && listUsers.map((item, idx) => {
-                            const date = new Date(item.createdAt);
-                            const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).replace(',', '');
-                            
                             return (
                                 <Tr className='' key={item.id} style={{border:'#000'}}>
                                     <Td className='py-3'>
@@ -122,7 +118,7 @@ const UsersTable = ({handleDelete, toggleStatus}) => {
                                         {/* <p>{item.createdAt}</p> */}
                                     </Td>
                                     <Td className=''>
-                                        <Switch size='sm' colorScheme='orange' isChecked={false} onChange={()=>toggleStatus(item.id, item.username)}/>
+                                        <Switch size='sm' colorScheme='orange' isChecked={false} onChange={()=>toggleStatus(item.id, item.username, item.status)}/>
                                     </Td>
                                     <Td>
                                         <div className="buttons flex justify-end items-center">
@@ -178,27 +174,28 @@ const UsersTable = ({handleDelete, toggleStatus}) => {
                                         <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>type user:</h3>
                                         <p className='col-span-3 py-2 border-b'>{userDetails.accountType}</p>
                                         <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>status:</h3>
-                                        <Switch className='col-span-3 mt-1 py-2 border-b' size='sm' colorScheme='orange' isChecked={false} onChange={()=>toggleStatus(userDetails.id,userDetails.username)}/>
+                                        <Switch className='col-span-3 mt-1 py-2 border-b' size='sm' colorScheme='orange' isChecked={false} onChange={()=>toggleStatus(userDetails.id,userDetails.username, userDetails.status)}/>
                                         <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>created at:</h3>
                                         <p className='col-span-3 py-2 border-b'>{convertToDateFromat(userDetails.createdAt)}</p>
                                     </div>
                                     <div className='flex items-center justify-between'>
                                         <button
-                                            onClick={onClose}
-                                            className='mt-6 p-3 border border-primary-200 rounded-lg w-[45%] text-sm text-primary-200'>
-                                            Delete
-                                        </button>
-                                        <button
-                                        onClick={() => {
+                                            onClick={() => {
                                             setIdUser(userDetails.id)
                                             setuserName(userDetails.username)
                                             setVeiwModal(false)
                                             onOpen()
                                         }
                                         }
-                                            className='mt-6 p-3 bg-primary-200 rounded-lg w-[45%] text-sm text-white'>
-                                            Edit
+                                            className='mt-6 p-3 border border-primary-200 rounded-lg w-[45%] text-sm text-primary-200'>
+                                            Delete
                                         </button>
+                                        <Link to={'./edit'} className='w-[45%]'>
+                                            <button
+                                                className='mt-6 p-3 bg-primary-200 rounded-lg w-full text-sm text-white'>
+                                                Edit
+                                            </button>
+                                        </Link>
                                     </div>
                                 </div>
                                 :

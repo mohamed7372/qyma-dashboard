@@ -20,7 +20,7 @@ const InputCustom = ({ title, type = 'date', placeholder, min, max, disabled = f
 
     return (
         <div className="relative">
-            <div className="border border-primary-200 px-6 py-2 rounded-lg text-primary-100">
+            <div className="border border-primary-200 px-6 py-2 rounded-lg text-primary-200">
                 <Input
                     placeholder={placeholder}
                     size="md"
@@ -31,10 +31,10 @@ const InputCustom = ({ title, type = 'date', placeholder, min, max, disabled = f
                     onChange={handleChangeInput}
                     disabled={disabled}
                     variant='unstyled'
-                    className="bg-primary-200 text-primary-100 w-full outline-none text-xs my-1 placeholder:text-primary-200 placeholder:text-opacity-50"
+                    className="text-primary-100 w-full outline-none text-xs my-1"
                 />
             </div>
-            <p className='absolute left-2 -top-2 bg-secondary-200 text-xs font-semibold px-2 text-primary-100 capitalize'>{title}</p>
+            <p className='absolute left-2 -top-2 text-xs font-semibold px-2 text-primary-100 capitalize rounded-md bg-primary-400'>{title}</p>
         </div>
     )
 }

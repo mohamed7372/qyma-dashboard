@@ -18,7 +18,10 @@ import { useToast } from '@chakra-ui/react'
 import SelectCustom from '../../components/form/SelectCustom'
 import InputCustom from '../../components/form/InputCustom'
 
+const token = '1|JKQoed3wKKLsTUby23bZufeploYnKhIsts1DtBxD'
+
 const Reviews = () => {
+    
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -26,7 +29,8 @@ const Reviews = () => {
     }, []);
 
     const searchSlice = useSelector(state=>state.filter.search)
-    const topicSlice = useSelector(state=>state.filter.topic)
+    const search2Slice = useSelector(state=>state.filter.search2)
+    const ratingSlice = useSelector(state=>state.filter.rating)
     const statusSlice = useSelector(state=>state.filter.status)
     const dateToSlice = useSelector(state=>state.filter.to)
     const dateFromSlice = useSelector(state=>state.filter.from)
@@ -41,19 +45,18 @@ const Reviews = () => {
             title: 'published'
         }
     ]
-
+    
     // get all reviews 
     useEffect(() => {
         reviewService
-            .getReviews()
+            .getReviews(searchSlice, search2Slice, ratingSlice, dateFromSlice,dateToSlice, statusSlice)
             .then((res) => {
                 dispatch(listReviewActions.replaceData(res.data.data));    
                 dispatch(listReviewActions.dataLoading());    
-                console.log(res.data.data);
             }).catch((err) => {
                 console.log(err);                
             });
-    }, [dispatch, searchSlice, topicSlice, dateFromSlice,dateToSlice, statusSlice])
+    }, [dispatch, searchSlice, search2Slice, ratingSlice, dateFromSlice,dateToSlice, statusSlice])
 
     const toast = useToast()
 
@@ -61,7 +64,7 @@ const Reviews = () => {
     const [typeToast, setTypeToast] = useState('')
     const [titleToast, setTitleToast] = useState('')
     
-    // // show toast msg 
+    // show toast msg 
     useEffect(() => {
         if (msgToast && titleToast && typeToast) {
             toast({
@@ -84,6 +87,21 @@ const Reviews = () => {
                 setMsgToast(`We\'ve delete a review for user ${userName} of ${bussinessName} for you.`);
 
                 dispatch(listReviewActions.removeData(idComment));    
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    const toggleStatus = (idComment, userName, bussinessName, value) => {
+        reviewService
+            .toggleReview(idComment, token)
+            .then(res => {
+                dispatch(listReviewActions.updateData({ id: idComment, value: value }));    
+                
+                setTypeToast('success') 
+                setTitleToast('Comment updated.')
+                setMsgToast(`We\'ve change comment ${userName} in bussiness ${bussinessName} status for you.`);
             })
             .catch(err => {
                 console.log(err);
@@ -119,7 +137,7 @@ const Reviews = () => {
                         <SelectCustom title={'rating'} data={dataStatus}/>
                     </div>
 
-                    <ReviewsTable handleDelete={handleDelete} />
+                    <ReviewsTable handleDelete={handleDelete} toggleStatus={toggleStatus} />
                     
                     {/* <div className='mt-4'></div> */}
                     {/* <Pagination/> */}

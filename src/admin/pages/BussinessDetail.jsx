@@ -44,7 +44,7 @@ const BussinessDetail = () => {
             })
         
         reviewService
-            .getReviewsOfBussiness(id)
+            .getReviewOfBussiness(id)
             .then(res => {
                 dispatch(listReviewActions.replaceData(res.data.data))
                 dispatch(listReviewActions.dataLoading())
@@ -153,7 +153,7 @@ const Bussiness = () => {
                     </div>
                 </div>    
             
-                <RatingReviews />
+                {/* <RatingReviews /> */}
                         
                 <Card>
                     <h3 className='text-center md:text-left mt-4 mb-4 font-bold text-2xl px-0 md:px-0'>People Also Viewed</h3>

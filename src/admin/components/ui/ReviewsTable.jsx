@@ -35,7 +35,7 @@ import { listBussinessActions } from '../../../store/bussiness/list-bussiness-sl
 import ReviewCard2 from '../ui/ReviewCard2'
 import reviewService from '../../../services/review';
 
-const ReviewsTable = ({handleDelete}) => {
+const ReviewsTable = ({handleDelete, toggleStatus}) => {
     const listReviews = useSelector(state => state.listReview.itemsList)
     const statusListReviews = useSelector(state => state.listReview.status)
 
@@ -52,41 +52,16 @@ const ReviewsTable = ({handleDelete}) => {
     if (!statusListReviews)
         return null;
 
-    const toggleStatus = (id, number) => {
-        episodeService
-            .toggleEpisode(id)
-            .then(res => {
-                episodeService
-                .getAll()
-                .then((res) => {
-                    // setTypeToast('success') 
-                    // setTitleToast('Podcast updated.')
-                    // setMsgToast(`We\'ve change podcast ${number} status for you.`);
-
-                    dispatch(listBussinessActions.replaceData(res.episodes));    
-                    dispatch(listBussinessActions.dataLoading());    
-                }).catch((err) => {
-                    console.log(err);                
-                });
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-    
     const handleView = (idComment) => {
         setVeiwModal(true)
         onOpen()
         reviewService
             .getReview(idComment)
             .then(
-                res => {
-                    console.log('#####', res.data);
+                res => 
                     setReviewDetail(res.data)
-                }
             )
     }
-
 
     return (
         <TableContainer className='w-full bg-primary-200 bg-opacity-20 rounded-xl'>
@@ -98,7 +73,6 @@ const ReviewsTable = ({handleDelete}) => {
                         <Th className=' !text-primary-100'>bussiness</Th>
                         <Th className=' !text-primary-100'>rating</Th>
                         <Th className=' !text-primary-100'>useful</Th>
-                        <Th className=' !text-primary-100'>useless</Th>
                         <Th className=' !text-primary-100'>nbr vote</Th>
                         <Th className=' !text-primary-100'>created at</Th>
                         <Th className=' !text-primary-100'>status</Th>
@@ -129,16 +103,13 @@ const ReviewsTable = ({handleDelete}) => {
                                         <p className=''>{item.useful}</p>
                                     </Td>
                                     <Td>
-                                        <p className=''>0 ??</p>
-                                    </Td>
-                                    <Td>
                                         <p className=''>{item.userVote}</p>
                                     </Td>
                                     <Td>
                                         <p>{formattedDate}</p>
                                     </Td>
                                     <Td className=''>
-                                        <Switch size='sm' colorScheme='orange' isChecked={false} onChange={()=>toggleStatus(item._id, item.episodeNumber)}/>
+                                        <Switch size='sm' colorScheme='orange' isChecked={item.state === 'A'} onChange={()=>toggleStatus(item.id, item.user.username, item.bussinessName, item.state)}/>
                                     </Td>
                                     <Td className='!w-[300px]'>
                                         <div className="buttons flex justify-end items-center">
@@ -162,7 +133,7 @@ const ReviewsTable = ({handleDelete}) => {
                     }
                 </Tbody>
             </Table>
-            <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={true} size={'5xl'}>
+            <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={true} size={viewModal ? '5xl' : 'sm'}>
                 <ModalOverlay />
                     <ModalContent overflow={'hidden'} rounded={'10'}>
                         <ModalHeader className=''>{viewModal ? 'Details Review' : 'Delete Review'}</ModalHeader>
@@ -175,12 +146,22 @@ const ReviewsTable = ({handleDelete}) => {
                                     <ReviewCard2 review={reviewDetail} />
                                     <div className='flex items-center justify-end'>
                                         <button
-                                            onClick={onClose}
+                                            onChange={() =>
+                                            {
+                                                toggleStatus(reviewDetail.id, reviewDetail.user.username, reviewDetail.bussinessName, reviewDetail.status)
+                                                onClose()
+                                            }}
                                             className='p-3 mr-8 border border-primary-200 rounded-lg w-60 text-sm text-primary-200'>
                                             Enable Status
                                         </button>
                                         <button
-                                            onClick={onClose}
+                                            onClick={() => {
+                                                setIdComment(reviewDetail.id)
+                                                setuserName(reviewDetail.user.username)
+                                                setBussinessName(reviewDetail.businessName)
+                                                setVeiwModal(false)
+                                                onOpen()
+                                            }}
                                             className='p-3 border border-primary-200 rounded-lg w-60 text-sm text-white bg-primary-200'>
                                             Delete
                                         </button>
@@ -201,6 +182,7 @@ const ReviewsTable = ({handleDelete}) => {
                                             setIdComment('')
                                             setBussinessName('')
                                             setuserName('')
+                                            onClose()
                                         }
                                         }
                                             className='mt-6 p-3 bg-primary-200 rounded-lg w-[45%] text-sm text-white'>

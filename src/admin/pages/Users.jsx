@@ -23,7 +23,7 @@ const Users = () => {
     }, []);
 
     const searchSlice = useSelector(state=>state.filter.search)
-    const topicSlice = useSelector(state=>state.filter.typeAccount)
+    const typeAccountSlice = useSelector(state=>state.filter.typeAccount)
     const statusSlice = useSelector(state=>state.filter.status)
     const dateToSlice = useSelector(state=>state.filter.to)
     const dateFromSlice = useSelector(state=>state.filter.from)
@@ -31,14 +31,14 @@ const Users = () => {
     // get all users 
     useEffect(() => {
         userService
-            .getUsers(searchSlice, topicSlice, dateFromSlice, dateToSlice, statusSlice)
+            .getUsers(searchSlice, typeAccountSlice, dateFromSlice, dateToSlice, statusSlice)
             .then((res) => {
                 dispatch(listUserActions.replaceData(res.data.data));    
                 dispatch(listUserActions.dataLoading());    
             }).catch((err) => {
                 console.log(err);                
             });
-    }, [dispatch, searchSlice, topicSlice, dateFromSlice,dateToSlice, statusSlice])
+    }, [dispatch, searchSlice, typeAccountSlice, dateFromSlice,dateToSlice, statusSlice])
 
     const toast = useToast()
 
@@ -68,14 +68,14 @@ const Users = () => {
                 setTitleToast('User deleted.')
                 setMsgToast(`We\'ve delete user ${name} for you.`);
 
-                dispatch(listUserActions.removeDAta(id));    
+                dispatch(listUserActions.removeData(id));    
             })
             .catch(err => {
                 console.log(err);
             })
     }
 
-    const toggleStatus = (id, name) => {
+    const toggleStatus = (id, name, value) => {
         userService
             .toggleUser(id)
             .then(res => {
@@ -83,7 +83,7 @@ const Users = () => {
                 setTitleToast('User updated.')
                 setMsgToast(`We\'ve change user ${name} status for you.`);
 
-                dispatch(listUserActions.updateData({ id:id, value:true}));    
+                dispatch(listUserActions.updateData({ id:id, value:value}));    
             })
             .catch(err => {
                 console.log(err);

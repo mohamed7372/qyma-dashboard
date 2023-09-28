@@ -23,82 +23,14 @@ import { Switch } from '@chakra-ui/react'
 import categoriesService from '../../../services/categories';
 import {listBussinessActions} from '../../../store/bussiness/list-bussiness-slice.js'
 
-const BussinessTable = () => {
+const BussinessTable = ({handleDelete, toggleStatus}) => {
     const listBussiness = useSelector(state => state.listBussiness.itemsList)
     const statusListBussiness = useSelector(state => state.listBussiness.status)
 
     const dispatch = useDispatch();
 
-    const toast = useToast()
-
-    // const [msgToast, setMsgToast] = useState('')
-    // const [typeToast, setTypeToast] = useState('')
-    // const [titleToast, setTitleToast] = useState('')
-    
-    // // show toast msg 
-    // useEffect(() => {
-    //     if (msgToast && titleToast && typeToast) {
-    //         toast({
-    //             title: titleToast,
-    //             description: msgToast,
-    //             status: typeToast,
-    //             duration: 5000,
-    //             isClosable: true,
-    //         })
-    //     }
-
-    // }, [msgToast, titleToast, typeToast])
-
     if (!statusListBussiness)
         return null;
-
-
-    const handleDelete = (id, number) => {
-        categoriesService
-            .deleteEpisode(id)
-            .then(res => {
-                episodeService
-                .getAll()
-                .then((res) => {
-                    // setTypeToast('success') 
-                    // setTitleToast('Podcast deleted.')
-                    // setMsgToast(`We\'ve delete podcast ${number} for you.`);
-
-                    dispatch(listBussinessActions.replaceData(res.episodes));    
-                    dispatch(listBussinessActions.dataLoading());    
-                }).catch((err) => {
-                    console.log(err);                
-                });
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-
-    const toggleStatus = (id, number) => {
-        episodeService
-            .toggleEpisode(id)
-            .then(res => {
-                episodeService
-                .getAll()
-                .then((res) => {
-                    // setTypeToast('success') 
-                    // setTitleToast('Podcast updated.')
-                    // setMsgToast(`We\'ve change podcast ${number} status for you.`);
-
-                    dispatch(listBussinessActions.replaceData(res.episodes));    
-                    dispatch(listBussinessActions.dataLoading());    
-                }).catch((err) => {
-                    console.log(err);                
-                });
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
-    
-
-    console.log(listBussiness);
 
     return (
         <TableContainer className='w-full bg-primary-200 bg-opacity-20 rounded-xl'>
@@ -141,7 +73,7 @@ const BussinessTable = () => {
                                         <p>{formattedDate}</p>
                                     </Td>
                                     <Td className=''>
-                                        <Switch size='sm' colorScheme='orange' isChecked={item.state === 'Running'} onChange={()=>toggleStatus(item._id, item.episodeNumber)}/>
+                                        <Switch size='sm' colorScheme='orange' isChecked={item.state === 'Running'} onChange={()=>toggleStatus(item._id, item.episodeNumber, item.status)}/>
                                     </Td>
                                     <Td>
                                         <div className="buttons flex justify-end items-center">
@@ -155,7 +87,7 @@ const BussinessTable = () => {
                                                     <img src={IconEdit} alt="" className='w-[17px]'/>
                                                 </Link>
                                             </button>
-                                            <button className='mx-1' onClick={()=>handleDelete(item._id, item.episodeNumber)}>
+                                            <button className='mx-1' onClick={()=>handleDelete(item.id, item.episodeNumber)}>
                                                 <img src={IconBin} alt="" className='w-[17px]'/>
                                             </button>
                                         </div>

@@ -10,7 +10,8 @@ import StickyBox from 'react-sticky-box'
 import { useDispatch, useSelector } from 'react-redux'
 import {listCategoryActions} from '../../store/category/list-category-slice'
 import CategoriesTable from '../components/ui/CategoriesTable'
-import categoriesService from '../../services/category'
+import { useToast } from '@chakra-ui/react'
+import categoriesService from '../../services/categories'
 
 const Categories = () => {
     const dispatch = useDispatch();
@@ -19,27 +20,75 @@ const Categories = () => {
         window.scrollTo(0, 0);
     }, []);
 
-    const [alert, setAlert] = useState(0)   // 1 for success
-    const [msgAlert, setMsgAlert] = useState('')
-    const [trending, setTrending] = useState([])
-    
     const searchSlice = useSelector(state=>state.filter.search)
-    const topicSlice = useSelector(state=>state.filter.topic)
     const statusSlice = useSelector(state=>state.filter.status)
     const dateToSlice = useSelector(state=>state.filter.to)
     const dateFromSlice = useSelector(state=>state.filter.from)
     
-    // get all episode 
+    const toast = useToast()
+
+    const [msgToast, setMsgToast] = useState('')
+    const [typeToast, setTypeToast] = useState('')
+    const [titleToast, setTitleToast] = useState('')
+
+    // show toast msg 
+    useEffect(() => {
+        if (msgToast && titleToast && typeToast) {
+            toast({
+                title: titleToast,
+                description: msgToast,
+                status: typeToast,
+                duration: 5000,
+                isClosable: true,
+            })
+        }
+
+    }, [msgToast, titleToast, typeToast])
+
+    
+    // get all categories 
     useEffect(() => {
         categoriesService
-            .getCategories()
+            .getAll(searchSlice,dateFromSlice, dateToSlice, statusSlice)
             .then((res) => {
                 dispatch(listCategoryActions.replaceData(res.data));    
                 dispatch(listCategoryActions.dataLoading());    
             }).catch((err) => {
                 console.log(err);                
             });
-    }, [dispatch, searchSlice, topicSlice, dateFromSlice,dateToSlice, statusSlice])
+    }, [dispatch, searchSlice, dateFromSlice,dateToSlice, statusSlice])
+
+    const handleDelete = (id, name) => {
+        categoriesService
+            .deleteCategory(id)
+            .then(res => {
+                setTypeToast('success') 
+                setTitleToast('User deleted.')
+                setMsgToast(`We\'ve delete user ${name} for you.`);
+
+                dispatch(listCategoryActions.removeData(id));    
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    const toggleStatus = (id, name, value) => {
+        console.log(id, name, value);
+        dispatch(listCategoryActions.updateData({ id:id, value:value}));    
+        // categoriesService
+        //     .toggleCategory(id)
+        //     .then(res => {
+        //         setTypeToast('success') 
+        //         setTitleToast('User updated.')
+        //         setMsgToast(`We\'ve change user ${name} status for you.`);
+                
+        //         dispatch(listCategoryActions.updateData({ id:id, value:true}));    
+        //     })
+        //     .catch(err => {
+        //         console.log(err);
+        //     })
+    }
 
     return (
         <div className='grid grid-cols-12 min-h-screen'>
@@ -68,7 +117,7 @@ const Categories = () => {
                         </div>
                     </div>
                     <Filter/>
-                    <CategoriesTable setAlert={setAlert} setMsgAlert={setMsgAlert} />
+                    <CategoriesTable handleDelete={handleDelete} toggleStatus={toggleStatus} />
                     
                     {/* <div className='mt-4'></div> */}
                     {/* <Pagination/> */}

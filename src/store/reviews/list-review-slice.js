@@ -15,7 +15,13 @@ const listReviewSlice = createSlice({
         },
         removeData(state, action) {
             state.itemsList = state.itemsList.filter(item => item.id !== action.payload);
-        }
+        },
+        updateData(state, action) {
+            state.itemsList = state.itemsList.map(item =>
+                item.id === action.payload.id
+                    ? { ...item, state: action.payload.value === 'A' ? 'S' : 'A' }
+                    : item);
+        },
     },
 });
 
