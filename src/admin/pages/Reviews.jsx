@@ -10,7 +10,6 @@ import StickyBox from 'react-sticky-box'
 import { useDispatch, useSelector } from 'react-redux'
 import {listCategoryActions} from '../../store/category/list-category-slice'
 import CategoriesTable from '../components/ui/CategoriesTable'
-import categoriesService from '../../services/category'
 import ReviewsTable from '../components/ui/ReviewsTable'
 import reviewService from '../../services/review'
 import { listReviewActions } from '../../store/reviews/list-review-slice'
@@ -49,8 +48,9 @@ const Reviews = () => {
     // get all reviews 
     useEffect(() => {
         reviewService
-            .getReviews(searchSlice, search2Slice, ratingSlice, dateFromSlice,dateToSlice, statusSlice)
+            .getReviews(searchSlice, search2Slice, ratingSlice, dateFromSlice, dateToSlice, statusSlice)
             .then((res) => {
+                console.log(res);
                 dispatch(listReviewActions.replaceData(res.data.data));    
                 dispatch(listReviewActions.dataLoading());    
             }).catch((err) => {
