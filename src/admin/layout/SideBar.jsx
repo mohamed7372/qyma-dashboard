@@ -127,17 +127,6 @@ const SideBar = () => {
                 <li className={pathname.includes('categories') ? styleSelect : ''}>
                     <Item select={pathname.includes('categories')} title={'categories'} url='/admin/categories'/>
                 </li>
-                <li>
-                    <p onClick={handleLogin}>login</p>
-                </li>
-                <li>
-                    {/* <input type="file" name="" id="" onChange={handleFile}/> */}
-                    <p onClick={handleFile}>test api</p>
-                </li>
-
-                <li className=''>
-                    <div className="w-40 h-40 bg-red-200 place-content-center grid"><p className='w-fit h-fit bg-blue-400'>1</p></div>
-                </li>
             </ul>
         </div>
     )

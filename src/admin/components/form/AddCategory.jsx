@@ -49,7 +49,7 @@ const AddCategory = () => {
         }
         else {
             categoriesService
-                .addCategory(id, title, titleAR, titleEN, description, descriptionAR, descriptionEN, topic, files[0])
+                .addCategory(title, titleAR, titleEN, description, descriptionAR, descriptionEN, topic, files[0])
                 .then(res => {
                     console.log(res);
                 })
@@ -71,6 +71,7 @@ const AddCategory = () => {
                 .get(id)
                 .then(res => {
                     setTitle(res)
+                    // setTitleAR(res.data.)
                 })
         }
     }, [])
@@ -115,10 +116,10 @@ const AddCategory = () => {
                                 {category && <SelectCustom title={'parent category'} data={category} item={topic} setItem={setTopic} showAll />}
                             </div>
                             <div className='col-span-6'>
-                                <InputCustom title={'display name AR'} type='text' placeholder={'enter title in arabic'} item={title} setItem={setTitle} />
+                                <InputCustom title={'display name AR'} type='text' placeholder={'enter title in arabic'} item={titleAR} setItem={setTitleAR} />
                             </div>
                             <div className='col-span-6'>
-                                <InputCustom title={'display name EN'} type='text' placeholder={'enter title in english'} item={title} setItem={setTitle} />
+                                <InputCustom title={'display name EN'} type='text' placeholder={'enter title in english'} item={titleEN} setItem={setTitleEN} />
                             </div>
                         </div>
                     </Card>
@@ -151,7 +152,7 @@ const AddCategory = () => {
                     <Card>
                         <Title nbr={3} title={'Description'} />
                         <div>
-                            <textarea name="" id="" placeholder='write something...' value={description}
+                            <textarea name="" id="" placeholder='write something in French...' value={description}
                                 cols="30" rows="10" className='w-full rounded-lg border border-primary-200 placeholder:text-primary-200 placeholder:text-opacity-50 bg-transparent px-4 py-2 outline-none'
                                 onChange={(e)=>setDescription(e.target.value)}
                             >
@@ -186,7 +187,7 @@ const AddCategory = () => {
                         
                         <div className={`w-fit flex justify-end px-4 mt-6 mb-4 ${title && titleAR && titleEN && description && descriptionAR && descriptionEN && files.length !== 0 ? 'opacity-100' : 'opacity-30'}`}>
                             <button className='rounded-md px-10 py-2 font-semibold text-white bg-primary-200'
-                                disabled={!title || !titleAR || titleEN || description || descriptionAR || descriptionEN || files.length === 0}
+                                disabled={!title || !titleAR || !titleEN || !description || !descriptionAR || !descriptionEN || files.length === 0}
                                 onClick={(e) => handleSubmit(e)}>{editPage.includes('edit') ? 'Edit category' : 'Add category'}</button>
                         </div>
                     }

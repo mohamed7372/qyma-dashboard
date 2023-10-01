@@ -111,7 +111,7 @@ const CategoriesTable = ({handleDelete, toggleStatus}) => {
                                         <p>{formattedDate}</p>
                                     </Td>
                                     <Td className=''>
-                                        <Switch size='sm' colorScheme='orange' isChecked={item.state === 'Running'} onChange={()=>toggleStatus(item.id, item.displayName, item.status)}/>
+                                        <Switch size='sm' colorScheme='orange' isChecked={item.state === 'A'} onChange={()=>toggleStatus(item.id, item.displayName, item.status)}/>
                                     </Td>
                                     <Td>
                                         <div className="buttons flex justify-end items-center">
@@ -169,7 +169,7 @@ const CategoriesTable = ({handleDelete, toggleStatus}) => {
                                         <p className='col-span-3 py-2 border-b'>{categoryDetails.description}</p>
 
                                         <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>status:</h3>
-                                        <Switch className='col-span-3 mt-1 py-2 border-b' size='sm' colorScheme='orange' isChecked={false} onChange={()=>toggleStatus(categoryDetails.id,categoryDetails.displayName, categoriesService.status)}/>
+                                        <Switch className='col-span-3 mt-1 py-2 border-b' size='sm' colorScheme='orange' isChecked={categoryDetails.state === 'A'} onChange={()=>toggleStatus(categoryDetails.id,categoryDetails.displayName, categoryDetails.status)}/>
 
                                         <h3 className='font-semibold capitalize col-span-2 py-2 border-b'>created at:</h3>
                                         <p className='col-span-3 py-2 border-b'>{convertToDateFromat(categoryDetails.createdAt)}</p>

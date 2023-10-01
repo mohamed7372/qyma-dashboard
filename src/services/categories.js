@@ -16,19 +16,18 @@ const get = (id) => axios
 const addCategory = (title, titleAR, titleEN, description, descriptionAR, descriptionEN, topic, image) => {
     const formData = new FormData();
     formData.append('userId', '1')
-    formData.append('name', 'sfd')
     formData.append('displayName', title)
     formData.append('displayNameAr', titleAR)
     formData.append('displayNameEn', titleEN)
     formData.append('description', description)
-    formData.append('descriptionAR', descriptionAR)
-    formData.append('descriptionEN', descriptionEN)
-    formData.append('parent', topic)
-    formData.append('image', image)
+    formData.append('descriptionAr', descriptionAR)
+    formData.append('descriptionEn', descriptionEN)
+    // formData.append('parent', topic)
+    // formData.append('image', image)
 
     return axios
         .post(
-            `${url}/categories`,
+            `${url}/category/create`,
             formData,
             {
                 headers: {
@@ -70,10 +69,10 @@ const updateCategory = (id, title, titleAR, titleEN, description, descriptionAR,
         .catch((error) => json(error));
 }
 
-const toggle = (id) => {
+const toggleCategory = (id) => {
     return axios
         .patch(
-            `${url}/categories/change/state/${id}`, 
+            `${url}/category/change/state/${id}`, 
             null,
             {
                 headers: {
@@ -87,7 +86,7 @@ const toggle = (id) => {
 }
 
 const deleteCategory = (id) => axios
-    .get(`${url}/categories/${id}`)
+    .delete(`${url}/category/delete/${id}`)
     .then((response) => response.data)
     .catch((error) => json(error));
 
@@ -98,5 +97,6 @@ export default {
     get,
     addCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    toggleCategory
 };

@@ -74,20 +74,18 @@ const Categories = () => {
     }
 
     const toggleStatus = (id, name, value) => {
-        console.log(id, name, value);
-        dispatch(listCategoryActions.updateData({ id:id, value:value}));    
-        // categoriesService
-        //     .toggleCategory(id)
-        //     .then(res => {
-        //         setTypeToast('success') 
-        //         setTitleToast('User updated.')
-        //         setMsgToast(`We\'ve change user ${name} status for you.`);
+        categoriesService
+            .toggleCategory(id)
+            .then(res => {
+                setTypeToast('success') 
+                setTitleToast('User updated.')
+                setMsgToast(`We\'ve change user ${name} status for you.`);
                 
-        //         dispatch(listCategoryActions.updateData({ id:id, value:true}));    
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        //     })
+                dispatch(listCategoryActions.updateData({ id:id, value:true}));    
+            })
+            .catch(err => {
+                console.log(err);
+            })
     }
 
     return (

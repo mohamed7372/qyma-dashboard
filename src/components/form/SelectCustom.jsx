@@ -16,6 +16,7 @@ const SelectCustom = ({ title, children, data, item, setItem, showAll=false }) =
         <div className="relative">
             <div className="border border-primary-100 px-6 py-2 rounded-lg text-gray-600">
                 <select variant='unstyled' className='text-sm my-1 w-full outline-none bg-transparent text-primary-100 capitalize' onChange={handleChangeInput}>
+                    <option value={''} className='capitalize text-black' selected={item === ''}>none</option>
                     {!showAll && <option value={'all'} className='capitalize'>all</option>}
                     {
                         data.map( itemData => {
